@@ -14,7 +14,7 @@ function Navbar(){
 
             <ul className="nav-list">
 
-                <li><Link to="/" className="nav-link">
+                <li><Link to="/join-session" className="nav-link">
                     <IoFishOutline size={24} aria-hidden="true" />
                     <span>Home</span>
                 </Link></li>

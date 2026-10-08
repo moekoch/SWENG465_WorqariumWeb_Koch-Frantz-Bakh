@@ -6,6 +6,7 @@ import Games from "./pages/Games"
 import Profile from "./pages/Profile"
 import ActiveSession from "./pages/ActiveSession"
 import Settings from "./pages/Settings"
+import Login from "./pages/Login"
 
 function App() {
   return (
@@ -13,11 +14,12 @@ function App() {
 
     <Routes>
 
-      <Route path="/" element={<JoinSession />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/join-session" element={<JoinSession />} />
       <Route path="/shop" element={<Shop />} />
       <Route path="/games" element={<Games />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/session" element={<ActiveSession />} />
+      <Route path="/active-session" element={<ActiveSession />} />
       <Route path="/settings" element={<Settings />} />
 
     </Routes>
