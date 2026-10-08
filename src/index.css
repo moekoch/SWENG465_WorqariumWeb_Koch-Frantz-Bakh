@@ -1,52 +1,41 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap');
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+:root {
+  /* color palette */
+  --white: #ffffff;
+  --light-green: #a0e020;
+  --dark-green: #60c020;
+  --blue-gray: #c0e0e0;
+  --light-blue: #80c0e0;
+  --dark-blue: #60a0c0;
+  --dark-blue-hover: #4f88a8;
+
+  /* color specifics */
+  --text: #666666;
+  --text-h: #000000;
+  --bg: var(--blue-gray);
+  --surface: rgba(255, 255, 255, 0.7);
+  --radius: 16px;
+  --radius-sm: 8px;
+
+  /* font family */
+  --sans: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
+  /* formatting */
+  font: 400 18px/145% var(--sans);
   color: var(--text);
   background: var(--bg);
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* small screen */
   @media (max-width: 1024px) {
     font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
   }
 }
 
@@ -55,57 +44,120 @@ body {
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  width: 100%;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
+/* full-screen ocean scene (shared by every screen) */
+.scene {
+  flex: 1;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px 96px; /* bottom room for the nav pill */
+  box-sizing: border-box;
+  background:
+    linear-gradient(to bottom, var(--white) 0%, rgba(255, 255, 255, 0) 14%),
+    linear-gradient(to bottom, var(--light-blue) 0%, #8fdcff 30%, #7ec4f5 100%);
+  background-size: cover;
+  background-position: center;
+  /* swap in the exported Figma image: */
+  /* background-image: url('/images/ocean.jpg'); */
+}
+
+/* typography */
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-h);
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
+  font-size: 40px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
   @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+    font-size: 32px;
   }
 }
+
 h2 {
-  font-size: 24px;
+  font-size: 28px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
-    font-size: 20px;
+    font-size: 22px;
   }
 }
+
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.label {
+  font-family: var(--sans);
+  font-weight: 700;
+  color: var(--text);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* frosted cards */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 24px 32px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* centered, stacked card (e.g. Join Session) */
+.card-center {
+  width: min(402px, 100%);
+  padding: 48px 32px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* buttons */
+button {
+  font-family: var(--sans);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary {
+  font-size: 24px;
+  line-height: 1;
+  padding: 14px 28px;
+  color: var(--white);
+  background: var(--dark-blue);
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: var(--dark-blue-hover);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-primary:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
 }
