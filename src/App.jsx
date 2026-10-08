@@ -4,6 +4,7 @@ import JoinSession from "./pages/JoinSession"
 import Shop from "./pages/Shop"
 import Games from "./pages/Games"
 import Profile from "./pages/Profile"
+import ActiveSession from "./pages/ActiveSession"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/shop" element={<Shop />} />
       <Route path="/games" element={<Games />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/session" element={<ActiveSession />} />
     </Routes>
 
     <Navbar />
