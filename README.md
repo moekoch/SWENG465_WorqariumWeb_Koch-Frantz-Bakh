@@ -1,39 +1,16 @@
-# 🐠🐠🐠 Workquarium — Web 
+# React + Vite
 
-Workquarium is a virtual underwater social and coworking platform where users can focus, socialize, play games, and connect with others.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features
+Currently, two official plugins are available:
 
-- Virtual coworking spaces
-- Silent and group focus sessions
-- Creature-based user statuses and presence
-- Public and private rooms
-- Tankmate/friend system
-- Real-time chat and optional calls
-- Multiplayer games and social activities
-- Personal aquarium customization
-- Points, achievements, and progression
-- Language translation compatibility
-- Light/Dark modes 
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Tech Stack
+## React Compiler
 
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- Socket.IO
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Architecture
+## Expanding the ESLint configuration
 
-The Workquarium web application connects to a shared backend, authentication system, and database used by both the web and mobile applications.
-
-## Run Server
-
-```bash
-node server.js
-```
-
-## Swagger API
-
-http://localhost:3000/api-docs
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
