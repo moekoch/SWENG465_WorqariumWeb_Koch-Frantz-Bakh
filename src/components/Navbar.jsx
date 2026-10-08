@@ -1,4 +1,10 @@
 import { Link } from "react-router-dom"
+import {
+  IoFishOutline,
+  IoStorefrontOutline,
+  IoDiceOutline,
+  IoPersonCircleOutline,
+} from "react-icons/io5"
 import "./Navbar.css"
 
 function Navbar(){
@@ -7,10 +13,22 @@ function Navbar(){
 
             <ul className="nav-list">
 
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/shop">Shop</Link></li>
-                <li><Link to="/games">Games</Link></li>
-                <li><Link to="/profile">Profile</Link></li>
+                <li><Link to="/" className="nav-link">
+                    <IoFishOutline size={24} aria-hidden="true" />
+                    <span>Home</span>
+                </Link></li>
+                <li><Link to="/shop" className="nav-link">
+                    <IoStorefrontOutline size={24} aria-hidden="true" />
+                    <span>Shop</span>
+                </Link></li>
+                <li><Link to="/games" className="nav-link">
+                    <IoDiceOutline size={24} aria-hidden="true" />
+                    <span>Games</span>
+                </Link></li>
+                <li><Link to="/profile" className="nav-link">
+                    <IoPersonCircleOutline size={24} aria-hidden="true" />
+                    <span>Profile</span>
+                </Link></li>
 
             </ul>
             
