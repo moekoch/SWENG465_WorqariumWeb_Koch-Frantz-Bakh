@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 
 const API_URL = "http://localhost:3000"
 
-function Login() {
+function Register() {
   const navigate = useNavigate()
   const dialogRef = useRef(null)
   const [username, setUsername] = useState("")
@@ -140,4 +140,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Register
