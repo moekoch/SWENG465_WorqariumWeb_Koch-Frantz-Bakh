@@ -10,7 +10,7 @@ function JoinSession({ onJoin }) {
           Ready to join
           <br />a session?
         </h1>
-        <button type="button" className="btn-primary" onClick={() => navigate("/session")}>
+        <button type="button" className="btn-primary" onClick={() => navigate("/active-session")}>
           Dive in!
         </button>
       </section>

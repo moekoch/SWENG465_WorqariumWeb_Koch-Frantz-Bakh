@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"
 import Navbar from "./components/Navbar"
 
 // pages in alphabetical order
@@ -15,30 +15,40 @@ import Profile from "./pages/Profile"
 import Settings from "./pages/Settings"
 import Shop from "./pages/Shop"
 
+// wraps every screen that should show the navbar
+function LayoutWithNavbar() {
+  return (
+    <>
+      <Outlet />
+      <Navbar />
+    </>
+  )
+}
+
 function App() {
   return (
     <BrowserRouter>
 
     <Routes>
-      {/* first page that shows */}
+      {/* first page, no navbar */}
       <Route path="/" element={<Login />} />
 
-      {/* pages in alphabetical order */}
-      <Route path="/active-session" element={<ActiveSession />} />
-      <Route path="/avatar" element={<Avatar />} />
-      <Route path="/blackjack" element={<Blackjack />} />
-      <Route path="/bot-query" element={<BotQuery />} />
-      <Route path="/games" element={<Games />} />
-      <Route path="/go-fish" element={<GoFish />} />
-      <Route path="/join-session" element={<JoinSession />} />
-      <Route path="/loading" element={<Loading />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/shop" element={<Shop />} />
+      {/* pages with navbar */}
+      <Route element={<LayoutWithNavbar />}>
+        <Route path="/active-session" element={<ActiveSession />} />
+        <Route path="/avatar" element={<Avatar />} />
+        <Route path="/blackjack" element={<Blackjack />} />
+        <Route path="/bot-query" element={<BotQuery />} />
+        <Route path="/games" element={<Games />} />
+        <Route path="/go-fish" element={<GoFish />} />
+        <Route path="/join-session" element={<JoinSession />} />
+        <Route path="/loading" element={<Loading />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/shop" element={<Shop />} />
+      </Route>
 
     </Routes>
-
-    <Navbar />
 
     </BrowserRouter>
   )
