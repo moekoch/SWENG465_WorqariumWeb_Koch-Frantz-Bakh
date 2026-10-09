@@ -33,6 +33,7 @@ function App() {
     <Routes>
       {/* first page, no navbar */}
       <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
       {/* pages with navbar */}
       <Route element={<LayoutWithNavbar />}>
@@ -45,7 +46,6 @@ function App() {
         <Route path="/join-session" element={<JoinSession />} />
         <Route path="/loading" element={<Loading />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/shop" element={<Shop />} />
       </Route>

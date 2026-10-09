@@ -188,6 +188,16 @@ button {
   gap: 16px;
 }
 
+.form-link {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.form-link a {
+  color: var(--dark-blue-hover);
+  font-weight: 700;
+}
+
 .field {
   width: 100%;
   display: flex;

@@ -1,13 +1,11 @@
-import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
 const API_URL = "http://localhost:3000"
 
 function Login() {
   const navigate = useNavigate()
-  const dialogRef = useRef(null)
   const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
@@ -20,46 +18,16 @@ function Login() {
       const res = await fetch(`${API_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      })
-      const data = await res.json()
-
-      if (res.ok) {
-        // go to JoinSession after logging in
-        navigate("/join-session")
-        return
-      }
-
-      // no account matches: ask before creating one
-      if (res.status === 404 && data.code === "ACCOUNT_NOT_FOUND") {
-        dialogRef.current.showModal()
-        return
-      }
-
-      setError(data.error || "Login failed")
-    } catch {
-      setError("Could not reach the server")
-    }
-  }
-
-  async function createAccount() {
-    dialogRef.current.close()
-    setError("")
-
-    try {
-      const res = await fetch(`${API_URL}/api/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, password }),
       })
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || "Could not create account")
+        setError(data.error || "Login failed")
         return
       }
 
-      // new account is ready, so continue to JoinSession
+      // go to JoinSession after logging in
       navigate("/join-session")
     } catch {
       setError("Could not reach the server")
@@ -85,18 +53,6 @@ function Login() {
           </div>
 
           <div className="field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="field">
             <label htmlFor="password">Password</label>
             <input
               id="password"
@@ -108,6 +64,10 @@ function Login() {
             />
           </div>
 
+          <p className="form-link">
+            Don't have an account? <Link to="/register">Create one</Link>
+          </p>
+
           {error && <p className="error-msg" role="alert">ⓧ {error}</p>}
 
           <button type="submit" className="btn-primary">
@@ -115,27 +75,6 @@ function Login() {
           </button>
         </form>
       </section>
-
-      {/* confirmation popup */}
-      <dialog ref={dialogRef} className="dialog" aria-labelledby="confirm-heading">
-        <h2 id="confirm-heading">Create a new account?</h2>
-        <p>
-          No account was found for <strong>{username}</strong> ({email}).
-          Would you like to create one with these details?
-        </p>
-        <div className="dialog-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={() => dialogRef.current.close()}
-          >
-            Cancel
-          </button>
-          <button type="button" className="btn-primary" onClick={createAccount}>
-            Create account
-          </button>
-        </div>
-      </dialog>
     </main>
   )
 }
