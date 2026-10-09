@@ -13,6 +13,7 @@
   /* color specifics */
   --text: #666666;
   --text-h: #000000;
+  --error: #FF0000;
   --bg: var(--blue-gray);
   --surface: rgba(255, 255, 255, 0.7);
   --radius: 16px;
@@ -274,4 +275,10 @@ input:focus-visible {
 .dialog .btn-secondary {
   font-size: 18px;
   padding: 12px 20px;
+}
+
+.error-msg {
+  font-size: 25px;
+  color: var(--error);
+  font-weight: bold;
 }

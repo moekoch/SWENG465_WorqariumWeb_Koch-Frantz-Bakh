@@ -108,7 +108,7 @@ function Login() {
             />
           </div>
 
-          {error && <p role="alert">{error}</p>}
+          {error && <p className="error-msg" role="alert">ⓧ {error}</p>}
 
           <button type="submit" className="btn-primary">
             Log in
