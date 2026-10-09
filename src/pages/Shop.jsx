@@ -52,7 +52,7 @@ function Shop() {
           <section className="shop-panel">
             <div className="shop-panel-header">
               <h2>Items</h2>
-              <span className="shop-balance">{pointBalance} points</span>
+              <span className="shop-balance">{pointBalance} pts</span>
             </div>
 
             <p className="shop-description">
