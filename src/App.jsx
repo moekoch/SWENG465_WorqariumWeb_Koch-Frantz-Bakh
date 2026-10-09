@@ -12,6 +12,7 @@ import JoinSession from "./pages/JoinSession"
 import Loading from "./pages/Loading"
 import Login from "./pages/Login"
 import Profile from "./pages/Profile"
+import Register from "./pages/Register"
 import Settings from "./pages/Settings"
 import Shop from "./pages/Shop"
 
@@ -44,6 +45,7 @@ function App() {
         <Route path="/join-session" element={<JoinSession />} />
         <Route path="/loading" element={<Loading />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/shop" element={<Shop />} />
       </Route>
