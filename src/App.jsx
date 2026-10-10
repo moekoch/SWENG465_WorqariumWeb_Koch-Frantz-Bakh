@@ -31,7 +31,7 @@ function App() {
     <BrowserRouter>
 
     <Routes>
-      {/* first page, no navbar */}
+      {/* pages without navbar */}
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
 

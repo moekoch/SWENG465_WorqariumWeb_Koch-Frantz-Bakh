@@ -1,5 +1,7 @@
+/* font import */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap');
 
+/* variables and base settings */
 :root {
   /* color palette */
   --white: #ffffff;
@@ -10,21 +12,25 @@
   --dark-blue: #60a0c0;
   --dark-blue-hover: #4f88a8;
 
-  /* color specifics */
+  /* semantic colors */
   --text: #666666;
   --text-h: #000000;
   --error: #FF0000;
   --bg: var(--blue-gray);
+
+  /* frosted card background */
   --surface: rgba(255, 255, 255, 0.7);
+
+  /* corner radius */
   --radius: 16px;
   --radius-sm: 8px;
 
-  /* font family */
+  /* font families */
   --sans: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: 'Plus Jakarta Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  /* formatting */
+  /* base text and rendering */
   font: 400 18px/145% var(--sans);
   color: var(--text);
   background: var(--bg);
@@ -34,16 +40,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* small screen */
+  /* small screens */
   @media (max-width: 1024px) {
     font-size: 16px;
   }
 }
 
+
+/* page and scene */
 body {
   margin: 0;
 }
 
+/* fill screen and stack vertically */
 #root {
   width: 100%;
   min-height: 100svh;
@@ -55,7 +64,7 @@ body {
   overflow: hidden;
 }
 
-/* full-screen ocean scene shared by every screen */
+/* ocean scene */
 .scene {
   flex: 1;
   min-height: 100svh;
@@ -71,7 +80,7 @@ body {
   background-position: center;
 }
 
-/* typography */
+/* shared typography style */
 h1,
 h2,
 h3 {
@@ -79,47 +88,49 @@ h3 {
   font-weight: 700;
   color: var(--text-h);
 }
-
 h1 {
   font-size: 40px;
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: 0;
+
   @media (max-width: 1024px) {
     font-size: 32px;
   }
 }
-
 h2 {
   font-size: 28px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
+
   @media (max-width: 1024px) {
     font-size: 22px;
   }
 }
 
+/* remove default paragraph margins */
 p {
   margin: 0;
 }
 
+/* bold text label */
 .label {
   font-family: var(--sans);
   font-weight: 700;
   color: var(--text);
 }
 
-/* frosted cards */
+/* frosted glass card */
 .card {
   background: var(--surface);
   border-radius: var(--radius);
   padding: 24px 32px;
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* Safari */
 }
 
-/* centered, stacked card (e.g. Join Session) */
+/* centered, stacked card */
 .card-center {
   width: min(402px, 100%);
   padding: 48px 32px 40px;
@@ -130,13 +141,14 @@ p {
   gap: 28px;
 }
 
-/* buttons */
+/* button font and pointer cursor */
 button {
   font-family: var(--sans);
   font-weight: 700;
   cursor: pointer;
 }
 
+/* primary button */
 .btn-primary {
   font-size: 24px;
   line-height: 1;
@@ -148,71 +160,20 @@ button {
   transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
+/* hover over button */
 .btn-primary:hover {
   background: var(--dark-blue-hover);
 }
 
+/* press-down effect */
 .btn-primary:active {
   transform: translateY(1px);
 }
 
+/* keyboard focus ring */
 .btn-primary:focus-visible {
   outline: 3px solid var(--white);
   outline-offset: 3px;
-}
-
-/* form formatting */
-.form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.form-link {
-  font-size: 14px;
-  color: var(--text);
-}
-
-.form-link a {
-  color: var(--dark-blue-hover);
-  font-weight: 700;
-}
-
-.field {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  text-align: left;
-}
-
-.field label {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-h);
-}
-
-input {
-  font-family: var(--sans);
-  font-size: 16px;
-  padding: 10px 12px;
-  color: var(--text-h);
-  background: var(--white);
-  border: 2px solid transparent;
-  border-radius: var(--radius-sm);
-  box-sizing: border-box;
-  width: 100%;
-}
-
-input::placeholder {
-  color: var(--text);
-}
-
-input:focus-visible {
-  outline: none;
-  border-color: var(--dark-blue);
 }
 
 /* secondary button */
@@ -227,16 +188,85 @@ input:focus-visible {
   transition: background-color 0.15s ease;
 }
 
+/* hover over button */
 .btn-secondary:hover {
   background: rgba(96, 160, 192, 0.15);
 }
 
+/* keyboard focus ring */
 .btn-secondary:focus-visible {
   outline: 3px solid var(--dark-blue);
   outline-offset: 3px;
 }
 
-/* confirmation popup */
+/* vertical stack form */
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* form field */
+.field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+/* form field label */
+.field label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+/* text inputs */
+input {
+  font-family: var(--sans);
+  font-size: 16px;
+  padding: 10px 12px;
+  color: var(--text-h);
+  background: var(--white);
+  border: 2px solid transparent; /* reserves space so focus border doesn't shift layout */
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* placeholder text */
+input::placeholder {
+  color: var(--text);
+}
+
+/* blue border on focus */
+input:focus-visible {
+  outline: none;
+  border-color: var(--dark-blue);
+}
+
+/* small text under form */
+.form-link {
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* form link text */
+.form-link a {
+  color: var(--dark-blue-hover);
+  font-weight: 700;
+}
+
+/* error message */
+.error-msg {
+  font-size: 25px;
+  color: var(--error);
+  font-weight: bold;
+}
+
+/* white popup box */
 .dialog {
   width: min(400px, calc(100% - 48px));
   box-sizing: border-box;
@@ -248,14 +278,17 @@ input:focus-visible {
   text-align: center;
 }
 
+/* dark overlay behind popup */
 .dialog::backdrop {
   background: rgba(0, 0, 0, 0.35);
 }
 
+/* popup heading */
 .dialog h2 {
   margin: 0 0 12px;
 }
 
+/* button row at bottom of popup */
 .dialog-actions {
   display: flex;
   justify-content: center;
@@ -263,14 +296,9 @@ input:focus-visible {
   margin-top: 24px;
 }
 
+/* smaller buttons inside popup */
 .dialog .btn-primary,
 .dialog .btn-secondary {
   font-size: 18px;
   padding: 12px 20px;
-}
-
-.error-msg {
-  font-size: 25px;
-  color: var(--error);
-  font-weight: bold;
 }

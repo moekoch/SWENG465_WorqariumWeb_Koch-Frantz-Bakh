@@ -1,4 +1,4 @@
-/* pinned to the bottom of the screen */
+/* frosted pill at bottom */
 .nav {
   position: fixed;
   bottom: 12px;
@@ -7,10 +7,10 @@
   padding: 4px;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 20px;
-  z-index: 10;
+  z-index: 10; /* stay above page content */
 }
 
-/* horizontal row, no bullets */
+/* horizontal row without bullets */
 .nav-list {
   display: flex;
   gap: 4px;
@@ -19,11 +19,12 @@
   padding: 0;
 }
 
+/* base link style */
 .nav-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 6px; /* space between icon and label */
   min-width: 96px;
   padding: 14px 12px;
   box-sizing: border-box;
@@ -34,15 +35,18 @@
   border-radius: 20px;
 }
 
+/* hover highlight */
+.nav-link:hover {
+  background: var(--dark-blue);
+}
+
+/* link for the current page */
 .nav-link.active {
   background: rgba(140, 130, 135, 0.95);
 }
 
+/* keyboard focus ring */
 .nav-link:focus-visible {
   outline: 3px solid var(--dark-blue);
   outline-offset: 2px;
-}
-
-.nav-link:hover {
-  background: var(--dark-blue);
 }
