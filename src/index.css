@@ -130,24 +130,6 @@ p {
   gap: 28px;
 }
 
-.profile-avatar {
-  width: min(160px, 100%);
-  height: auto;
-}
-
-.profile-card {
-  width: min(560px, 100%);
-  flex-direction: row;
-  justify-content: center;
-  gap: 20px;
-}
-
-@media (max-width: 480px) {
-  .profile-card {
-    flex-direction: column;
-  }
-}
-
 /* buttons */
 button {
   font-family: var(--sans);

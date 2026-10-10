@@ -1,0 +1,87 @@
+.profile-avatar {
+  width: min(160px, 100%);
+  height: auto;
+  object-fit: contain;
+}
+
+.profile-friend-avatar {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  object-fit: contain;
+}
+
+.profile-avatar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-info-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.profile-info-group {
+  transform: translateX(-50px);
+}
+
+.profile-card {
+  width: min(640px, 100%);
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.profile-friends {
+  width: 100%;
+  text-align: center;
+}
+
+.profile-friends h2 {
+  margin-bottom: 12px;
+}
+
+.profile-friends-list {
+  display: grid;
+  gap: 12px;
+  margin: 100px;
+  padding: 0;
+  list-style: none;
+  transform: translateY(-90px);
+}
+
+.profile-friend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.profile-friend-name {
+  color: var(--text-h);
+  font-weight: 900;
+}
+
+@media (max-width: 480px) {
+  .profile-summary {
+    flex-direction: column;
+  }
+
+  .profile-info-group {
+    align-items: center;
+  }
+}

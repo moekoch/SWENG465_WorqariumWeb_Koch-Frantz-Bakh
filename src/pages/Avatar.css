@@ -1,0 +1,135 @@
+.avatar-scene {
+  flex: 1;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 24px;
+  background:
+    linear-gradient(to bottom, var(--white) 0%, rgba(255, 255, 255, 0) 14%),
+    linear-gradient(to bottom, var(--light-blue) 0%, #8fdcff 30%, #7ec4f5 100%);
+}
+
+.avatar-container {
+  width: min(900px, 100%);
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: var(--radius);
+  background: var(--surface);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.avatar-container > h1 {
+  margin-bottom: 20px;
+}
+
+.avatar-preview {
+  display: block;
+  width: min(180px, 55vw);
+  max-height: 180px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 24px;
+}
+
+.avatar-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  text-align: left;
+}
+
+.color-palette,
+.fish-selection {
+  min-width: 0;
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.color-header,
+.fish-header {
+  margin-bottom: 16px;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.avatar-tile,
+.fish-tile {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 6px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.7);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.avatar-tile:hover,
+.fish-tile:hover {
+  transform: translateY(-2px);
+}
+
+.avatar-tile:focus-visible,
+.fish-tile:focus-visible {
+  outline: 3px solid var(--dark-blue);
+  outline-offset: 2px;
+}
+
+.color-square {
+  display: block;
+  width: 28px;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: var(--tile-color);
+}
+
+.fish-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.fish-tile {
+  aspect-ratio: 1;
+}
+
+.fish-image {
+  display: block;
+  width: 100%;
+  max-width: 68px;
+  max-height: 68px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .avatar-scene {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .avatar-container {
+    max-height: calc(100svh - 32px);
+    padding: 20px;
+  }
+
+  .avatar-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .color-palette,
+  .fish-selection {
+    padding: 16px;
+  }
+}
