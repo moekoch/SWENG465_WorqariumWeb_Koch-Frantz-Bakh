@@ -1,79 +1,79 @@
-
+import blueTang from "../assets/fish/blueTang.png"
+import { useState } from "react"
 import "./Shop.css"
 
 function Shop() {
-  const avatarColors = [
-    "#ffffff", "#e60000", "#ff8c32", "#fff000",
-    "#00e84a", "#00e5c7", "#00aaff", "#063cff",
-    "#7400ff", "#d000ff", "#ff00a8", "#6b0000",
-    "#888888", "#111111"
+  // total points user can spend
+  const pointBalance = 1000;
+
+  // config for each panel
+  const sections = [
+    { type: "avatar", title: "Avatars", description: "Customize your avatar", price: 500, count: 14 },
+    { type: "item",   title: "Items",   description: "Browse available items", price: 100, count: 14 },
   ]
 
-  const pointBalance = 1000;
-  const avatarPrice = 500
-  const itemPrice = 100
-  const items = Array.from({ length: 8 })
+  // selection state for display
+  const [selected, setSelected] = useState(null)
+
+  // if exact tile is selected
+  const isSelected = (type, index) =>
+    selected?.type === type && selected?.index === index
 
   return (
     <main className="scene shop-scene">
       <div className="shop-container">
-        <h1>Shop</h1>
 
+        {/* preview box */}
+        <section className="shop-preview card" aria-live="polite">
+
+          {/* image display */}
+          <div className="preview-image">
+            <img src={blueTang} alt="Blue Tang" />
+          </div>
+
+          {/* disable button when nothing selected */}
+          <button className="btn-primary preview-buy" disabled={!selected}>Buy</button>
+        </section>
+
+        {/* side by side panels */}
         <div className="shop-layout">
-          {/* avatar customization panel */}
-          <section className="shop-panel">
-            <div className="shop-panel-header">
-              <h2>Avatar</h2>
-              <span className="shop-balance">{pointBalance} pts</span>
-            </div>
+          {/* one panel per entry in sections */}
+          {sections.map(({ type, title, description, price, count }) => (
+            <section className="shop-panel" key={type}>
 
-            <p className="shop-description">
-              Customize your avatar
-            </p>
+              {/* title and points */}
+              <div className="shop-panel-header">
+                <h2>{title}</h2>
+                <span className="shop-balance">{pointBalance} pts</span>
+              </div>
 
-            <div className="avatar-grid">
-              {avatarColors.map((color, index) => (
-                <button
-                  className="avatar-tile"
-                  key={color}
-                  aria-label={`Avatar color ${index + 1}`}
-                  style={{ "--tile-color": color }}
-                >
-                  <span className="color-square" />
-                  <span className="tile-price">
-                    {avatarPrice}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
+              {/* section description */}
+              <p className="shop-description">{description}</p>
 
-          {/* items panel */}
-          <section className="shop-panel">
-            <div className="shop-panel-header">
-              <h2>Items</h2>
-              <span className="shop-balance">{pointBalance} pts</span>
-            </div>
-
-            <p className="shop-description">
-              Browse available items
-            </p>
-
-            <div className="items-grid">
-              {items.map((_, index) => (
-                <button
-                  className="item-tile"
-                  key={index}
-                  aria-label={`Item ${index + 1}, ${itemPrice} coins`}
-                >
-                  <span className="item-square" />
-                  <span className="tile-price">
-                    {itemPrice}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
+              {/* tile grid */}
+              <div className="shop-grid">
+                {/* create enough tiles for imgs */}
+                {Array.from({ length: count }).map((_, index) => (
+                  <button
+                    // highlight tile when selected
+                    className={`shop-tile${isSelected(type, index) ? " is-selected" : ""}`}
+                    // track each item in list
+                    key={index}
+                    // screen reader label
+                    aria-label={`${title.slice(0, -1)} ${index + 1}, ${price} pts`}
+                    // tell screen reader if selected
+                    aria-pressed={isSelected(type, index)}
+                    // select tile
+                    onClick={() => setSelected({ type, index })}
+                  >
+                    {/* tile */}
+                    <span className="tile-square" />
+                    <span className="tile-price">{price}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </main>
