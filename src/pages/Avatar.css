@@ -58,8 +58,8 @@
 
 .color-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .avatar-tile,
@@ -67,7 +67,8 @@
   display: grid;
   place-items: center;
   min-width: 0;
-  padding: 6px;
+  aspect-ratio: 1;
+  padding: 0;
   border: 2px solid transparent;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.7);
@@ -87,10 +88,11 @@
 
 .color-square {
   display: block;
-  width: 28px;
+  width: min(28px, 75%);
   aspect-ratio: 1;
   border-radius: 6px;
   background: var(--tile-color);
+  outline: 1px solid black;
 }
 
 .fish-grid {

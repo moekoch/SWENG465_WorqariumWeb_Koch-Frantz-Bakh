@@ -3,8 +3,8 @@ import "./Avatar.css"
 function Avatar() {
   const avatarColors = [
     "#ffffff", "#e60000", "#ff8c32", "#fff000",
-    "#00e84a", "#00e5c7", "#00aaff", "#063cff",
-    "#7400ff", "#d000ff", "#ff00a8", "#6b0000",
+    "#00e84a", "#00740f", "#009f89", "#00aaff", "#063cff",
+    "#7400ff", "#d000ff", "#ff00a8", "#451c00",
     "#888888", "#111111"
   ]
   const fishes = [
