@@ -1,6 +1,8 @@
 import "./Avatar.css"
+import { useNavigate } from "react-router-dom"
 
 function Avatar() {
+  const navigate = useNavigate()
   const avatarColors = [
     "#ffffff", "#e60000", "#ff8c32", "#fff000",
     "#00e84a", "#00740f", "#009f89", "#00aaff", "#063cff",
@@ -17,6 +19,13 @@ function Avatar() {
 
   return (
     <main className="avatar-scene">
+      <button
+        className="avatar-back-button"
+        type="button"
+        onClick={() => navigate(-1)}
+      >
+        ← Back
+      </button>
       <div className="avatar-container">
         <h1>Customize your Avatar</h1>
         <img

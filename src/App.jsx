@@ -8,6 +8,7 @@ import Blackjack from "./pages/Blackjack"
 import BotQuery from "./pages/BotQuery"
 import Games from "./pages/Games"
 import GoFish from "./pages/GoFish"
+import Hangman from "./pages/Hangman"
 import JoinSession from "./pages/JoinSession"
 import Loading from "./pages/Loading"
 import Login from "./pages/Login"
@@ -15,6 +16,7 @@ import Profile from "./pages/Profile"
 import Register from "./pages/Register"
 import Settings from "./pages/Settings"
 import Shop from "./pages/Shop"
+import TicTacToe from "./pages/TicTacToe"
 
 // wraps every screen that should show the navbar
 function LayoutWithNavbar() {
@@ -43,11 +45,13 @@ function App() {
         <Route path="/bot-query" element={<BotQuery />} />
         <Route path="/games" element={<Games />} />
         <Route path="/go-fish" element={<GoFish />} />
+        <Route path="/hangman" element={<Hangman />} />
         <Route path="/join-session" element={<JoinSession />} />
         <Route path="/loading" element={<Loading />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/tictactoe" element={<TicTacToe />} />
       </Route>
 
     </Routes>

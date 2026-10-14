@@ -1,4 +1,5 @@
 .avatar-scene {
+  position: relative;
   flex: 1;
   min-height: 100svh;
   display: flex;
@@ -9,6 +10,28 @@
   background:
     linear-gradient(to bottom, var(--white) 0%, rgba(255, 255, 255, 0) 14%),
     linear-gradient(to bottom, var(--light-blue) 0%, #8fdcff 30%, #7ec4f5 100%);
+}
+
+.avatar-back-button {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 1;
+  padding: 10px 16px;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(30, 80, 110, 0.12);
+}
+
+.avatar-back-button:hover {
+  background: var(--white);
+}
+
+.avatar-back-button:focus-visible {
+  outline: 3px solid var(--dark-blue);
+  outline-offset: 2px;
 }
 
 .avatar-container {
@@ -118,6 +141,11 @@
   .avatar-scene {
     align-items: flex-start;
     padding: 16px;
+  }
+
+  .avatar-back-button {
+    top: 16px;
+    left: 16px;
   }
 
   .avatar-container {
