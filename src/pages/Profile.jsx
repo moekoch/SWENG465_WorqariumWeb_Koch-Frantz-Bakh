@@ -1,6 +1,18 @@
 import "./Profile.css"
 import { useNavigate } from "react-router-dom"
+import blueTang from "../assets/fish/blueTang.png"
+import linedButterflyfish from "../assets/fish/linedButterflyfish.png"
+import moorishIdol from "../assets/fish/moorishIdol.png"
+import orangeClownfish from "../assets/fish/orangeClownfish.png"
+import schoolingBannerfish from "../assets/fish/schoolingBannerfish.png"
 
+const avatarImages = {
+  blueTang,
+  linedButterflyfish,
+  moorishIdol,
+  orangeClownfish,
+  schoolingBannerfish,
+}
 const friends = [
   { username: "Friend1", avatar: "/src/assets/fish/linedButterflyfish.png" },
   { username: "Friend2", avatar: "/src/assets/fish/orangeClownfish.png" },
@@ -9,6 +21,9 @@ const friends = [
 
 function Profile() {
   const navigate = useNavigate()
+  const selectedAvatar = localStorage.getItem("selectedAvatar")
+  const avatarImage = avatarImages[selectedAvatar] ?? blueTang
+  const avatarColor = localStorage.getItem("selectedAvatarColor") ?? "#ffffff"
 
   return (
     <main className="scene">
@@ -18,11 +33,22 @@ function Profile() {
       >
         <div className="profile-summary">
           <div className="profile-avatar-group">
-            <img
-              className="profile-avatar"
-              src="/src/assets/fish/blueTang.png"
-              alt="Your Avatar"
-            />
+            <div className="profile-avatar-preview">
+              <img
+                className="profile-avatar"
+                src={avatarImage}
+                alt="Your Avatar"
+              />
+              <span
+                className="profile-avatar-tint"
+                style={{
+                  backgroundColor: avatarColor,
+                  WebkitMaskImage: `url("${avatarImage}")`,
+                  maskImage: `url("${avatarImage}")`,
+                }}
+                aria-hidden="true"
+              />
+            </div>
             <button
               type="button"
               className="btn-secondary"

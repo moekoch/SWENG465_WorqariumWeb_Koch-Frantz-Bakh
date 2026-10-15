@@ -12,24 +12,39 @@
     linear-gradient(to bottom, var(--light-blue) 0%, #8fdcff 30%, #7ec4f5 100%);
 }
 
-.avatar-back-button {
+.avatar-back-button,
+.avatar-save-button {
   position: absolute;
   top: 24px;
-  left: 24px;
   z-index: 1;
   padding: 10px 16px;
-  color: var(--text-h);
-  background: var(--surface);
   border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: var(--radius-sm);
   box-shadow: 0 2px 8px rgba(30, 80, 110, 0.12);
+}
+
+.avatar-back-button {
+  left: 24px;
+  color: var(--text-h);
+  background: var(--surface);
+}
+
+.avatar-save-button {
+  right: 24px;
+  color: var(--white);
+  background: var(--dark-blue);
 }
 
 .avatar-back-button:hover {
   background: var(--white);
 }
 
-.avatar-back-button:focus-visible {
+.avatar-save-button:hover {
+  background: var(--dark-blue-hover);
+}
+
+.avatar-back-button:focus-visible,
+.avatar-save-button:focus-visible {
   outline: 3px solid var(--dark-blue);
   outline-offset: 2px;
 }
@@ -51,12 +66,30 @@
 }
 
 .avatar-preview {
-  display: block;
+  position: relative;
   width: min(180px, 55vw);
-  max-height: 180px;
-  height: auto;
-  object-fit: contain;
+  aspect-ratio: 1;
   margin: 0 auto 24px;
+}
+
+.avatar-preview-image,
+.avatar-preview-tint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.avatar-preview-tint {
+  mix-blend-mode: multiply;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  pointer-events: none;
 }
 
 .avatar-layout {
@@ -103,6 +136,11 @@
   transform: translateY(-2px);
 }
 
+.avatar-tile.is-selected,
+.fish-tile[aria-pressed="true"] {
+  border-color: var(--dark-blue);
+}
+
 .avatar-tile:focus-visible,
 .fish-tile:focus-visible {
   outline: 3px solid var(--dark-blue);
@@ -143,9 +181,17 @@
     padding: 16px;
   }
 
-  .avatar-back-button {
+  .avatar-back-button,
+  .avatar-save-button {
     top: 16px;
+  }
+
+  .avatar-back-button {
     left: 16px;
+  }
+
+  .avatar-save-button {
+    right: 16px;
   }
 
   .avatar-container {
