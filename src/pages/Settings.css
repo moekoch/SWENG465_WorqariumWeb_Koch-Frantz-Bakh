@@ -1,0 +1,196 @@
+/* color for warnings */
+:root {
+  --danger: #c40000;
+  --danger-hover: #a30000;
+}
+
+/* frosted card */
+.settings-card {
+  width: min(480px, 100%);
+  padding: 40px 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  text-align: left;
+}
+
+/* page title centered */
+.settings-card h1 {
+  text-align: center;
+}
+
+/* section headings */
+.settings-card h2 {
+  font-size: 18px;
+  line-height: 1.3;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+/* settings group stacked vertically */
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* label left, control right */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* helper text */
+.setting-text p {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* switch track */
+.switch {
+  flex-shrink: 0; /* keeps the pill from squishing next to long text */
+  position: relative;
+  width: 52px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--blue-gray); /* off color */
+  transition: background-color 0.2s ease;
+}
+
+/* track color when on */
+.switch[aria-checked='true'] {
+  background: var(--dark-green);
+}
+
+/* white circle that slides */
+.switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--white);
+  transition: transform 0.2s ease;
+}
+
+/* circle slide */
+.switch[aria-checked='true'] .switch-thumb {
+  transform: translateX(22px);
+}
+
+/* keyboard focus ring */
+.switch:focus-visible,
+.segment:focus-visible {
+  outline: 3px solid var(--dark-blue);
+  outline-offset: 3px;
+}
+
+/* equal-width inside bar */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  background: var(--blue-gray);
+  border-radius: var(--radius-sm);
+}
+
+/* one option button */
+.segment {
+  font-size: 15px;
+  padding: 10px 8px;
+  color: var(--text-h);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* hover over option */
+.segment:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* currently selected option */
+.segment[aria-checked='true'] {
+  color: var(--white);
+  background: var(--dark-blue);
+}
+
+/* buttons fill the card width */
+.settings-actions .btn-secondary,
+.settings-actions .btn-danger-outline {
+  width: 100%;
+  font-size: 18px;
+  padding: 14px 20px;
+}
+
+/* outlined red button */
+.btn-danger-outline {
+  line-height: 1;
+  color: var(--danger);
+  background: transparent;
+  border: 2px solid var(--danger);
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+/* hover over outlined red button */
+.btn-danger-outline:hover {
+  background: rgba(196, 0, 0, 0.08);
+}
+
+/* keyboard focus ring */
+.btn-danger-outline:focus-visible {
+  outline: 3px solid var(--danger);
+  outline-offset: 3px;
+}
+
+/* solid red button */
+.btn-danger {
+  line-height: 1;
+  color: var(--white);
+  background: var(--danger);
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+/* hover over solid red button */
+.btn-danger:hover {
+  background: var(--danger-hover);
+}
+
+/* press-down effect */
+.btn-danger:active {
+  transform: translateY(1px);
+}
+
+/* keyboard focus ring */
+.btn-danger:focus-visible {
+  outline: 3px solid var(--danger);
+  outline-offset: 3px;
+}
+
+/* smaller red button inside popups */
+.dialog .btn-danger {
+  font-size: 18px;
+  padding: 12px 20px;
+}
+
+/* change password form */
+.dialog .form {
+  align-items: stretch;
+}
+
+/* password error message */
+.dialog .error-msg {
+  font-size: 14px;
+  text-align: left;
+}
