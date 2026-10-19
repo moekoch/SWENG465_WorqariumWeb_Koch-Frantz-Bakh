@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import goFishImage from "../assets/games/GoFish.png"
-import hangmanImage from "../assets/games/Hangman.png"
-import ticTacToeImage from "../assets/games/TicTacToe.png"
+import blackjackImage from "../assets/games/Blackjack.png"
 import "./Games.css"
 
 function Games() {
@@ -19,19 +18,11 @@ function Games() {
             </button>
           </div>
         </section>
-        <section className="card card-center games-card" aria-label="Hangman">
+        <section className="card card-center games-card" aria-label="Blackjack">
           <div className="card-content">
-            <img className="games-card-image" src={hangmanImage} alt="Hangman" />
-            <button className="btn-primary" onClick={() => navigate("/hangman")}>
-              Hangman
-            </button>
-          </div>
-        </section>
-        <section className="card card-center games-card" aria-label="Tic Tac Toe">
-          <div className="card-content">
-            <img className="games-card-image" src={ticTacToeImage} alt="Tic Tac Toe" />
-            <button className="btn-primary" onClick={() => navigate("/tictactoe")}>
-              Tic Tac Toe
+            <img className="games-card-image" src={blackjackImage} alt="Blackjack" />
+            <button className="btn-primary" onClick={() => navigate("/blackjack")}>
+              Blackjack
             </button>
           </div>
         </section>
