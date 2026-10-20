@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { api } from '../api.js'
 import './Settings.css'
 
 // options for online status picker
@@ -48,7 +49,7 @@ function Settings() {
   }
 
   // check password form then save
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     // stop the browser from reloading the page
     e.preventDefault()
 
@@ -66,12 +67,23 @@ function Settings() {
 
     // both new password fields must match
     if (newPassword !== confirmPassword) {
-      setPasswordError('New passwords don’t match.')
+      setPasswordError('New passwords do not match.')
       return
     }
 
-    // everything passed, close the popup
-    passwordDialog.current.close()
+    // change password
+    try {
+      // check current password and save new one
+      await api('/api/users/me/password', {
+        method: 'PATCH',
+        body: { currentPassword, newPassword }
+      })
+
+      // close popup
+      passwordDialog.current.close()
+    } catch (error) {
+      setPasswordError(error.message)
+    }
   }
 
   // log user out

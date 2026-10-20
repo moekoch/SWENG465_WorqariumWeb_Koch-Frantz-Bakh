@@ -51,14 +51,14 @@
 
 /* switch track */
 .switch {
-  flex-shrink: 0; /* keeps the pill from squishing next to long text */
+  flex-shrink: 0;
   position: relative;
   width: 52px;
   height: 30px;
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: var(--blue-gray); /* off color */
+  background: var(--blue-gray);
   transition: background-color 0.2s ease;
 }
 
@@ -193,4 +193,14 @@
 .dialog .error-msg {
   font-size: 14px;
   text-align: left;
+}
+
+/* always shoe border on popup inputs */
+.dialog input {
+  border-color: var(--light-blue);
+}
+
+/* darker border on current input */
+.dialog input:focus-visible {
+  border-color: var(--dark-blue);
 }

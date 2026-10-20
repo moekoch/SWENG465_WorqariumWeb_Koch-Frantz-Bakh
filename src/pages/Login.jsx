@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { setToken } from "../api.js"
 
 // base URL of server
 const API_URL = "http://localhost:3000"
@@ -33,6 +34,9 @@ function Login() {
         setError(data.error || "Login failed")
         return
       }
+
+      // save the login token so later requests can send it
+      setToken(data.token)
 
       // go to main screen after logging in
       navigate("/join-session")
