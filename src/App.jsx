@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"
+import { Navigate } from 'react-router-dom'
+import { getToken } from './api.js'
 import Navbar from "./components/Navbar"
-
 // pages in alphabetical order
 import ActiveSession from "./pages/ActiveSession"
 import Avatar from "./pages/Avatar"
@@ -15,6 +16,11 @@ import Profile from "./pages/Profile"
 import Register from "./pages/Register"
 import Settings from "./pages/Settings"
 import Shop from "./pages/Shop"
+
+// only show the page if the user has a login token
+function RequireAuth({ children }) {
+  return getToken() ? children : <Navigate to="/" replace />
+}
 
 // wraps every screen that should show the navbar
 function LayoutWithNavbar() {
@@ -36,7 +42,7 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       {/* pages with navbar */}
-      <Route element={<LayoutWithNavbar />}>
+      <Route element={<RequireAuth><LayoutWithNavbar /></RequireAuth>}>
         <Route path="/active-session" element={<ActiveSession />} />
         <Route path="/avatar" element={<Avatar />} />
         <Route path="/blackjack" element={<Blackjack />} />

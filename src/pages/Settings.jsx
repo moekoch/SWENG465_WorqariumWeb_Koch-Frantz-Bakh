@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
-import { api } from '../api.js'
+import { useNavigate } from 'react-router-dom'
+import { api, clearToken } from '../api.js'
 import './Settings.css'
 
 // options for online status picker
@@ -10,6 +11,9 @@ const VISIBILITY_OPTIONS = [
 ]
 
 function Settings() {
+  // used to send the user to the login page after logging out
+  const navigate = useNavigate()
+
   // notifications on or off
   const [notifications, setNotifications] = useState(true)
 
@@ -88,7 +92,12 @@ function Settings() {
 
   // log user out
   const handleLogout = () => {
+    // forget the login token
+    clearToken()
+
+    // close popup and go back to login
     logoutDialog.current.close()
+    navigate('/')
   }
 
   // delete user account
