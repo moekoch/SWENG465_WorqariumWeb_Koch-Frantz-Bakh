@@ -1,0 +1,230 @@
+.go-fish-scene {
+  position: relative;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.go-fish-back-button {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 1;
+  padding: 10px 16px;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(30, 80, 110, 0.12);
+}
+
+.go-fish-back-button:hover {
+  background: var(--white);
+}
+
+.go-fish-back-button:focus-visible {
+  outline: 3px solid var(--dark-blue);
+  outline-offset: 2px;
+}
+
+.go-fish-table {
+  width: min(1100px, 100%);
+  margin: auto;
+  padding: clamp(20px, 4vw, 40px);
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.go-fish-table > h1 {
+  margin-bottom: 8px;
+}
+
+.go-fish-message {
+  min-height: 1.5em;
+  margin-bottom: 24px;
+  color: var(--text-h);
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.go-fish-opponent {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border-radius: var(--radius-sm);
+}
+
+.go-fish-shark {
+  display: block;
+  width: min(240px, 30%);
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.go-fish-opponent-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.go-fish-player {
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.go-fish-opponent h2,
+.go-fish-player h2 {
+  margin-bottom: 12px;
+}
+
+.go-fish-card-row,
+.go-fish-player-hand {
+  display: flex;
+  min-height: 112px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 4px;
+}
+
+.go-fish-card-back,
+.go-fish-player-card img {
+  display: block;
+  width: 64px;
+  height: auto;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+.go-fish-books {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.go-fish-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  gap: 6px;
+  padding: 10px;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(30, 80, 110, 0.12);
+  font-weight: 700;
+}
+
+.go-fish-deck img {
+  display: block;
+  width: 56px;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+.go-fish-player-card {
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.go-fish-player-card:not(:disabled):hover {
+  transform: translateY(-8px);
+}
+
+.go-fish-player-card:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.go-fish-player-card:focus-visible {
+  outline: 3px solid var(--dark-blue);
+  outline-offset: 3px;
+}
+
+.go-fish-restart {
+  margin-top: 20px;
+}
+
+.go-fish-game-over {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(12, 39, 61, 0.42);
+}
+
+.go-fish-game-over-card {
+  width: min(420px, 100%);
+  padding: 32px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24);
+}
+
+.go-fish-game-over-card h2 {
+  margin-bottom: 12px;
+}
+
+.go-fish-game-over-card p {
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .go-fish-scene {
+    padding: 16px 12px 96px;
+  }
+
+  .go-fish-back-button {
+    top: 16px;
+    left: 16px;
+  }
+
+  .go-fish-deck {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .go-fish-table {
+    padding: 18px 12px;
+  }
+
+  .go-fish-opponent,
+  .go-fish-player {
+    padding: 14px 10px;
+  }
+
+  .go-fish-opponent {
+    gap: 10px;
+  }
+
+  .go-fish-shark {
+    width: min(160px, 40%);
+  }
+
+  .go-fish-card-row,
+  .go-fish-player-hand {
+    justify-content: flex-start;
+  }
+
+  .go-fish-card-back,
+  .go-fish-player-card img {
+    width: 54px;
+  }
+}
