@@ -14,6 +14,10 @@ function Settings() {
   // used to send the user to the login page after logging out
   const navigate = useNavigate()
 
+  // password in  delete popup and error under it
+  const [deletePassword, setDeletePassword] = useState('')
+  const [deleteError, setDeleteError] = useState('')
+
   // notifications on or off
   const [notifications, setNotifications] = useState(true)
 
@@ -101,8 +105,25 @@ function Settings() {
   }
 
   // delete user account
-  const handleDelete = () => {
-    deleteDialog.current.close()
+  const handleDelete = async () => {
+    // password needed to prove account owner
+    if (!deletePassword) {
+      setDeleteError('Enter your password to delete your account.')
+      return
+    }
+
+    try {
+      // server deletes account the token belongs to
+      await api('/api/users/me', { method: 'DELETE', body: { password: deletePassword } })
+
+      // forget token and go to login
+      clearToken()
+      deleteDialog.current.close()
+      navigate('/')
+    } catch (error) {
+      // keep the popup open to show error
+      setDeleteError(error.message)
+    }
   }
 
   return (
@@ -296,9 +317,36 @@ function Settings() {
       </dialog>
 
       {/* delete account popup */}
-      <dialog ref={deleteDialog} className="dialog">
+      <dialog
+        ref={deleteDialog}
+        className="dialog"
+        onClose={() => {
+          setDeletePassword('')
+          setDeleteError('')
+        }}
+      >
         <h2>Delete your account?</h2>
         <p>This permanently deletes your account and can't be undone.</p>
+
+        {/* password field to confirm owner */}
+        <div className="field delete-password">
+          <label htmlFor="delete-password">Enter your password to confirm</label>
+          <input
+            id="delete-password"
+            type="password"
+            autoComplete="current-password"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+          />
+        </div>
+
+        {/* only show error when there is one */}
+        {deleteError && (
+          // screen readers read the error out loud
+          <p className="error-msg" role="alert">
+            {deleteError}
+          </p>
+        )}
 
         {/* popup buttons */}
         <div className="dialog-actions">

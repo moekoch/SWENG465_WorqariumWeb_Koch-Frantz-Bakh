@@ -204,3 +204,8 @@
 .dialog input:focus-visible {
   border-color: var(--dark-blue);
 }
+
+/* space between delete text and password field */
+.delete-password {
+  margin-top: 20px;
+}
