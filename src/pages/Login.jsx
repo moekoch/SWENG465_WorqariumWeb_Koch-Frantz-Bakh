@@ -1,9 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { setToken } from "../api.js"
-
-// base URL of server
-const API_URL = "http://localhost:3000"
+import { API_URL } from "../api.js"
 
 function Login() {
   const navigate = useNavigate()
