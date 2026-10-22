@@ -30,6 +30,13 @@ The Workquarium web application connects to a shared backend, authentication sys
 
 ## Run Web App
 
+**Prerequisite:** Start the backend server before running the web application. The shared backend provides the API endpoints, authentication, and MongoDB database used by both the web and mobile applications.
+
+1. Clone and start the backend server: [**SWENG465_WorqServer_Koch-Frantz-Bakh**](https://github.com/moekoch/SWENG465_WorqServer_Koch-Frantz-Bakh).
+2. In a separate terminal, navigate to the web application directory and run:
+
 ```bash
 npm run dev
 ```
+
+For API endpoint details and interactive Swagger/OpenAPI documentation, refer to the backend repository.
