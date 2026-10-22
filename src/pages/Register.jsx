@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-
-// base URL of server
-const API_URL = "http://localhost:3000"
+import { API_URL } from "../api.js"
 
 function Register() {
   const navigate = useNavigate()
@@ -38,8 +36,8 @@ function Register() {
         return
       }
 
-      // go to main screen after registering
-        navigate("/join-session")
+      // go to login after registering
+        navigate("/")
     } catch {
       // network failure or server down
       setError("Could not reach the server")
