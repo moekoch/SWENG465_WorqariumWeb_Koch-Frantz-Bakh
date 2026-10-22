@@ -78,6 +78,9 @@ function finishIfNeeded(game) {
   )
   const gameOver =
     game.playerBooks.length + game.computerBooks.length === 13 ||
+    (game.turn === "Shark" &&
+      game.playerHand.length === 0 &&
+      game.deck.length === 1) ||
     (game.deck.length === 0 &&
       (game.playerHand.length === 0 ||
         game.computerHand.length === 0 ||
