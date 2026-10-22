@@ -30,33 +30,7 @@ The Workquarium web application connects to a shared backend, authentication sys
 
 ## Run Web App
 
-### 1. Configure Environment Variables
-
-In the web application directory, create a `.env` file using the provided `.env.example` as a template.
-
-```bash
-cp .env.example .env
-```
-
-Configure the required environment variables in `.env`:
-
-```env
-MONGODB_URI=mongodb+srv://<db_username>:<db_password>@worqcluster.xdkdjdc.mongodb.net/?appName=WorqCluster
-JWT_SECRET=<secret>
-```
-
-- **`MONGODB_URI`** — Replace `<db_username>` and `<db_password>` with your MongoDB database credentials. Ensure your IP address is permitted by the MongoDB Atlas network access settings.
-- **`JWT_SECRET`** — Generate a secure secret using Node.js:
-
-  ```bash
-  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-  ```
-
-  Copy the generated value into `.env` in place of `<secret>`.
-
-> **Note:** Never commit `.env` or expose your database credentials or JWT secret. Keep `.env.example` as a template without real credentials.
-
-### 2. Start the Backend Server
+### 1. Start the Backend Server
 
 Before starting the web application, clone and configure the shared backend repository:
 
@@ -66,7 +40,7 @@ Follow the backend repository's setup instructions to configure its environment 
 
 The backend provides the API endpoints, authentication, and MongoDB database shared by the web and mobile applications. Swagger/OpenAPI documentation is also available through the backend.
 
-### 3. Install Dependencies and Start the Web App
+### 2. Install Dependencies and Start the Web App
 
 In a separate terminal, navigate to the web application directory and run:
 
