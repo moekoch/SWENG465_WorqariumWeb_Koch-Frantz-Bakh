@@ -1,0 +1,54 @@
+/* water area holds fish */
+.session-area {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: calc(100svh - 120px);
+  min-height: 320px;
+  overflow: hidden; /* keeps fish inside the water */
+  cursor: pointer;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* status text in middle of water */
+.session-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+/* one fish and centered name */
+.fish {
+  position: absolute;
+  width: 90px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none; /* clicks pass through to the water */
+  transition: left 0.8s ease-in-out, top 0.8s ease-in-out; /* smooth swimming */
+}
+
+/* avatar img */
+.fish img {
+  display: block;
+  width: 100%;
+}
+
+/* username under fish */
+.fish-name {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-size: 13px;
+  color: var(--text-h);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+}
+
+/* user's own name is bold */
+.fish.is-self .fish-name {
+  font-weight: 700;
+}
