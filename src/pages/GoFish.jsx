@@ -217,6 +217,11 @@ function GoFish() {
     return () => window.clearTimeout(timeout)
   }, [game])
 
+  const sortedPlayerHand = [...game.playerHand].sort(
+    (firstCard, secondCard) =>
+      ranks.indexOf(firstCard.rank) - ranks.indexOf(secondCard.rank),
+  )
+
   return (
     <main className="scene go-fish-scene">
       <button
@@ -265,7 +270,7 @@ function GoFish() {
         <section className="go-fish-player" aria-label="Your hand">
           <h2>Your hand · {game.playerHand.length} cards</h2>
           <div className="go-fish-player-hand">
-            {game.playerHand.map((card) => (
+            {sortedPlayerHand.map((card) => (
               <button
                 className="go-fish-player-card"
                 key={card.code}
