@@ -207,3 +207,47 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* name of fish under preview image */
+.preview-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-h);
+}
+
+/* result of last buy or use */
+.preview-note {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* tiles in items panel that can't be clicked yet */
+.shop-tile:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* no lift on disabled tiles */
+.shop-tile:disabled:hover {
+  background: rgba(255, 255, 255, 0.55);
+  transform: none;
+}
+
+/* fish picture in buy popup */
+.buy-image {
+  margin: 12px auto;
+}
+
+/* cost text in buy popup */
+.buy-detail {
+  font-size: 15px;
+}
+
+/* buy button grayed when the user can't afford */
+.dialog .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
