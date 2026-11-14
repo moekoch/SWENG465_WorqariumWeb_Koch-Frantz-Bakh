@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { api } from "../api.js"
 import { DEFAULT_FISH_KEY, getFishImage } from "../fishImages.js"
+import { getItemImage } from "../itemImages.js"
 import "./Shop.css"
 
-// placeholder tiles in items panel
-const ITEM_COUNT = 14
+// image for a fish or an item
+const imageFor = (kind, imageKey) =>
+  kind === "item" ? getItemImage(imageKey) : getFishImage(imageKey)
 
 function Shop() {
   // used to send user to login if token rejected
@@ -14,15 +16,23 @@ function Shop() {
   // fish for sale from server
   const [avatars, setAvatars] = useState([])
 
-  // user's points, owned fish, worn fish
-  const [wallet, setWallet] = useState({ points: 0, ownedAvatarIds: [], avatarId: null })
+  // items for sale from server
+  const [items, setItems] = useState([])
+
+  // user's points, owned fish and items, worn fish
+  const [wallet, setWallet] = useState({
+    points: 0,
+    ownedAvatarIds: [],
+    ownedItemIds: [],
+    avatarId: null,
+  })
 
   // false until shop data has loaded
   const [loaded, setLoaded] = useState(false)
   const [loadError, setLoadError] = useState("")
 
-  // id of fish picked in grid
-  const [selectedId, setSelectedId] = useState(null)
+  // what is picked in the grids
+  const [selection, setSelection] = useState(null)
 
   // true while waiting for server, and messages for user
   const [busy, setBusy] = useState(false)
@@ -32,14 +42,16 @@ function Shop() {
   // ref to buy popup
   const buyDialog = useRef(null)
 
-  // load fish and user's points when page opens
+  // load fish, items, and user's points when page opens
   useEffect(() => {
-    Promise.all([api("/api/avatars"), api("/api/users/me")])
-      .then(([fish, me]) => {
+    Promise.all([api("/api/avatars"), api("/api/items"), api("/api/users/me")])
+      .then(([fish, decorations, me]) => {
         setAvatars(fish)
+        setItems(decorations)
         setWallet({
           points: me.points,
           ownedAvatarIds: me.ownedAvatarIds,
+          ownedItemIds: me.ownedItemIds ?? [],
           avatarId: me.avatarId,
         })
         setLoaded(true)
@@ -56,29 +68,41 @@ function Shop() {
     avatars.find((a) => a._id === wallet.avatarId) ??
     avatars.find((a) => a.imageKey === DEFAULT_FISH_KEY)
 
-  // fish picked in grid
-  const selected = avatars.find((a) => a._id === selectedId)
+  // kind of thing picked and the thing itself
+  const kind = selection?.kind
+  const selected = selection
+    ? (kind === "item" ? items : avatars).find((thing) => thing._id === selection.id)
+    : undefined
 
-  // free fish belong to everyone
-  const isOwned = (avatar) => avatar.price === 0 || wallet.ownedAvatarIds.includes(avatar._id)
-  const isEquipped = (avatar) => avatar._id === equipped?._id
-
-  // preview shows picked fish or the user's current fish
-  const shown = selected ?? equipped
-
-  // text under each tile
-  const tileLabel = (avatar) => {
-    if (isEquipped(avatar)) return "In use"
-    if (isOwned(avatar)) return avatar.price === 0 ? "Free" : "Owned"
-    return `${avatar.price}`
+  // free things belong to everyone
+  const isOwned = (thing, thingKind) => {
+    const ownedIds = thingKind === "item" ? wallet.ownedItemIds : wallet.ownedAvatarIds
+    return thing.price === 0 || ownedIds.includes(thing._id)
   }
 
-  // can user pay for picked fish
+  // only fish can be worn
+  const isEquipped = (avatar) => avatar._id === equipped?._id
+
+  // is this exact tile picked
+  const isPicked = (thingKind, id) => selection?.kind === thingKind && selection?.id === id
+
+  // preview shows picked fish or item, or user's current fish
+  const shown = selected ?? equipped
+  const shownKind = selected ? kind : "avatar"
+
+  // text under each tile
+  const tileLabel = (thing, thingKind) => {
+    if (thingKind === "avatar" && isEquipped(thing)) return "In use"
+    if (isOwned(thing, thingKind)) return thing.price === 0 ? "Free" : "Owned"
+    return `${thing.price}`
+  }
+
+  // can user pay for picked thing
   const canAfford = selected ? wallet.points >= selected.price : false
 
-  // pick a fish
-  const handleSelect = (avatar) => {
-    setSelectedId(avatar._id)
+  // pick a fish or item
+  const handleSelect = (thingKind, thing) => {
+    setSelection({ kind: thingKind, id: thing._id })
     setMessage("")
   }
 
@@ -88,19 +112,16 @@ function Shop() {
     buyDialog.current.showModal()
   }
 
-  // buy picked fish
+  // buy picked fish or item
   const handleBuy = async () => {
     setBusy(true)
     setBuyError("")
     try {
-      const updated = await api(`/api/avatars/${selected._id}/purchase`, { method: "POST" })
+      const route = kind === "item" ? "items" : "avatars"
+      const updated = await api(`/api/${route}/${selected._id}/purchase`, { method: "POST" })
 
-      // use new balance and owned fish from server
-      setWallet((prev) => ({
-        ...prev,
-        points: updated.points,
-        ownedAvatarIds: updated.ownedAvatarIds,
-      }))
+      // use new balance and owned things from server
+      setWallet((prev) => ({ ...prev, ...updated }))
 
       buyDialog.current.close()
       setMessage(`You bought ${selected.name}!`)
@@ -129,7 +150,8 @@ function Shop() {
   // button under preview
   let action = { label: "Buy", disabled: true, onClick: undefined }
   if (selected) {
-    if (!isOwned(selected)) action = { label: "Buy", disabled: false, onClick: openBuy }
+    if (!isOwned(selected, kind)) action = { label: "Buy", disabled: false, onClick: openBuy }
+    else if (kind === "item") action = { label: "Owned", disabled: true, onClick: undefined }
     else if (isEquipped(selected)) action = { label: "In use", disabled: true, onClick: undefined }
     else action = { label: "Use", disabled: false, onClick: handleEquip }
   }
@@ -143,16 +165,16 @@ function Shop() {
 
           {/* image display */}
           <div className="preview-image">
-            {shown && <img src={getFishImage(shown.imageKey)} alt={shown.name} />}
+            {shown && <img src={imageFor(shownKind, shown.imageKey)} alt={shown.name} />}
           </div>
 
-          {/* name of the fish shown */}
+          {/* name of fish or item shown */}
           {shown && <p className="preview-name">{shown.name}</p>}
 
-          {/* result of the last buy or use */}
+          {/* result of last buy or use */}
           {message && <p className="preview-note">{message}</p>}
 
-          {/* buy, use, in use, disabled */}
+          {/* buy, use, owned, in use, disabled */}
           <button
             className="btn-primary preview-buy"
             disabled={action.disabled || busy}
@@ -186,45 +208,62 @@ function Shop() {
               {avatars.map((avatar) => (
                 <button
                   // highlight tile when selected
-                  className={`shop-tile${avatar._id === selectedId ? " is-selected" : ""}`}
+                  className={`shop-tile${isPicked("avatar", avatar._id) ? " is-selected" : ""}`}
                   // track each item in list
                   key={avatar._id}
                   // screen reader label
-                  aria-label={`${avatar.name}, ${tileLabel(avatar)}${isOwned(avatar) ? "" : " pts"}`}
+                  aria-label={`${avatar.name}, ${tileLabel(avatar, "avatar")}${isOwned(avatar, "avatar") ? "" : " pts"}`}
                   // tell screen reader if selected
-                  aria-pressed={avatar._id === selectedId}
+                  aria-pressed={isPicked("avatar", avatar._id)}
                   // select tile
-                  onClick={() => handleSelect(avatar)}
+                  onClick={() => handleSelect("avatar", avatar)}
                 >
                   {/* fish image */}
                   <span className="tile-square">
                     <img src={getFishImage(avatar.imageKey)} alt="" />
                   </span>
-                  <span className="tile-price">{tileLabel(avatar)}</span>
+                  <span className="tile-price">{tileLabel(avatar, "avatar")}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          {/* items panel */}
+          {/* decorations panel */}
           <section className="shop-panel">
+
+            {/* title and points */}
             <div className="shop-panel-header">
-              <h2>Items</h2>
+              <h2>Decorations</h2>
               <span className="shop-balance">{loaded ? wallet.points : "…"} pts</span>
             </div>
-            <p className="shop-description">Coming soon</p>
 
-            {/* disabled placeholder tiles */}
+            {/* section description */}
+            <p className="shop-description">Obtain profile decorations</p>
+
+            {/* status messages */}
+            {loadError && <p className="error-msg" role="alert">{loadError}</p>}
+            {!loaded && !loadError && <p className="shop-description">Loading decorations...</p>}
+
+            {/* one tile per item from server */}
             <div className="shop-grid">
-              {Array.from({ length: ITEM_COUNT }).map((_, index) => (
+              {items.map((item) => (
                 <button
-                  className="shop-tile"
-                  key={index}
-                  disabled
-                  aria-label={`Item ${index + 1}, coming soon`}
+                  // highlight tile when selected
+                  className={`shop-tile${isPicked("item", item._id) ? " is-selected" : ""}`}
+                  // track each item in list
+                  key={item._id}
+                  // screen reader label
+                  aria-label={`${item.name}, ${tileLabel(item, "item")}${isOwned(item, "item") ? "" : " pts"}`}
+                  // tell screen reader if selected
+                  aria-pressed={isPicked("item", item._id)}
+                  // select tile
+                  onClick={() => handleSelect("item", item)}
                 >
-                  <span className="tile-square" />
-                  <span className="tile-price">100</span>
+                  {/* item image */}
+                  <span className="tile-square">
+                    <img src={getItemImage(item.imageKey)} alt="" />
+                  </span>
+                  <span className="tile-price">{tileLabel(item, "item")}</span>
                 </button>
               ))}
             </div>
@@ -238,9 +277,9 @@ function Shop() {
           <>
             <h2>Buy {selected.name}?</h2>
 
-            {/* picture of fish */}
+            {/* picture of fish or item */}
             <div className="preview-image buy-image">
-              <img src={getFishImage(selected.imageKey)} alt="" />
+              <img src={imageFor(kind, selected.imageKey)} alt="" />
             </div>
 
             {/* cost and balance */}
@@ -256,7 +295,7 @@ function Shop() {
               </p>
             )}
 
-            {/* error from the server */}
+            {/* error from server */}
             {buyError && (
               <p className="error-msg" role="alert">
                 {buyError}
