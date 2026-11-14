@@ -17,6 +17,9 @@ function Games() {
             <button className="btn-primary" onClick={() => navigate("/go-fish")}>
               Go Fish
             </button>
+            <button className="btn-primary" onClick={() => navigate("/go-fish/challenge")}>
+              Challenge
+            </button>
           </div>
         </section>
         <section className="card card-center games-card" aria-label="Blackjack">

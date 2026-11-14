@@ -9,6 +9,7 @@ import Blackjack from "./pages/Blackjack"
 import BotQuery from "./pages/BotQuery"
 import Games from "./pages/Games"
 import GoFish from "./pages/GoFish"
+import GoFishX from "./pages/GoFishX"
 import JoinSession from "./pages/JoinSession"
 import Loading from "./pages/Loading"
 import Login from "./pages/Login"
@@ -49,6 +50,7 @@ function App() {
         <Route path="/bot-query" element={<BotQuery />} />
         <Route path="/games" element={<Games />} />
         <Route path="/go-fish" element={<GoFish />} />
+        <Route path="/go-fish/challenge" element={<GoFishX />} />
         <Route path="/join-session" element={<JoinSession />} />
         <Route path="/loading" element={<Loading />} />
         <Route path="/profile" element={<Profile />} />

@@ -48,6 +48,36 @@
   background: rgba(255, 255, 255, 0.42);
 }
 
+.go-fish-error {
+  margin: -12px 0 20px;
+  color: #a32121;
+  font-weight: 700;
+}
+
+.go-fish-lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(440px, 100%);
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.go-fish-lobby p {
+  color: var(--text);
+}
+
+.go-fish-lobby button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.go-fish-lobby .btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .go-fish-opponent {
   display: flex;
   align-items: center;
