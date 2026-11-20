@@ -1,50 +1,74 @@
-import { useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { api } from "../api.js"
-import { DEFAULT_FISH_KEY, getFishImage } from "../fishImages.js"
-import { getItemImage } from "../itemImages.js"
-import "./Shop.css"
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { IoArrowBack, IoStarOutline } from 'react-icons/io5'
+import { api } from '../api.js'
+import BubbleLoader from '../components/BubbleLoader.jsx'
+import { environmentStyle } from '../environmentImages.js'
+import { DEFAULT_FISH_KEY, getFishImage } from '../fishImages.js'
+import { getItemImage } from '../itemImages.js'
+import './Shop.css'
+
+// the two tabs: fish looks and tank decor
+const TABS = [
+  {
+    kind: 'avatar',
+    label: 'Avatar decoration',
+    heading: 'A fresh look for your fish.',
+    subheading: 'Pick a fish to wear around the Commons.',
+  },
+  {
+    kind: 'item',
+    label: 'Tank furniture',
+    heading: 'A little home beneath the current.',
+    subheading: 'Plants, decor, and cozy corners for your tank.',
+  },
+]
+
+// short lines under each product name (the server sends names only)
+const BLURBS = {
+  'Seagrass planter': 'A little patch of green.',
+  'Coral garden': 'A soft splash of color.',
+  'Stone arch': 'A calm hideaway.',
+  'Bubble lamp': 'A gentle glow.',
+}
+const blurbFor = (kind, name) =>
+  BLURBS[name] ?? (kind === 'item' ? 'A little something for your tank.' : 'A new look for your fish.')
 
 // image for a fish or an item
-const imageFor = (kind, imageKey) =>
-  kind === "item" ? getItemImage(imageKey) : getFishImage(imageKey)
+const imageFor = (kind, imageKey) => (kind === 'item' ? getItemImage(imageKey) : getFishImage(imageKey))
 
 function Shop() {
-  // used to send user to login if token rejected
+  // used to send user to login if token rejected, and back to the tank
   const navigate = useNavigate()
 
-  // fish for sale from server
+  // fish and items for sale from server
   const [avatars, setAvatars] = useState([])
-
-  // items for sale from server
   const [items, setItems] = useState([])
 
-  // user's points, owned fish and items, worn fish
-  const [wallet, setWallet] = useState({
-    points: 0,
-    ownedAvatarIds: [],
-    ownedItemIds: [],
-    avatarId: null,
-  })
+  // user's coins, owned fish and items, worn fish
+  const [wallet, setWallet] = useState({ points: 0, ownedAvatarIds: [], ownedItemIds: [], avatarId: null })
 
   // false until shop data has loaded
   const [loaded, setLoaded] = useState(false)
-  const [loadError, setLoadError] = useState("")
+  const [loadError, setLoadError] = useState('')
 
-  // what is picked in the grids
-  const [selection, setSelection] = useState(null)
+  // which tab is open
+  const [activeKind, setActiveKind] = useState('item')
+
+  // what the buy popup is asking about, { kind, id }
+  const [pending, setPending] = useState(null)
 
   // true while waiting for server, and messages for user
   const [busy, setBusy] = useState(false)
-  const [buyError, setBuyError] = useState("")
-  const [message, setMessage] = useState("")
+  const [buyError, setBuyError] = useState('')
+  const [shopkeeperNote, setShopkeeperNote] = useState('')
 
   // ref to buy popup
   const buyDialog = useRef(null)
 
-  // load fish, items, and user's points when page opens
+  // load fish, items, and user's coins when page opens
   useEffect(() => {
-    Promise.all([api("/api/avatars"), api("/api/items"), api("/api/users/me")])
+    Promise.all([api('/api/avatars'), api('/api/items'), api('/api/users/me')])
       .then(([fish, decorations, me]) => {
         setAvatars(fish)
         setItems(decorations)
@@ -58,275 +82,203 @@ function Shop() {
       })
       .catch((error) => {
         // not logged in or token expired, send to login
-        if (error.status === 401) navigate("/")
-        else setLoadError("Could not load the shop.")
+        if (error.status === 401) navigate('/')
+        else setLoadError('Could not load the shop.')
       })
   }, [navigate])
 
   // worn fish
   const equipped =
-    avatars.find((a) => a._id === wallet.avatarId) ??
-    avatars.find((a) => a.imageKey === DEFAULT_FISH_KEY)
-
-  // kind of thing picked and the thing itself
-  const kind = selection?.kind
-  const selected = selection
-    ? (kind === "item" ? items : avatars).find((thing) => thing._id === selection.id)
-    : undefined
+    avatars.find((avatar) => avatar._id === wallet.avatarId) ??
+    avatars.find((avatar) => avatar.imageKey === DEFAULT_FISH_KEY)
 
   // free things belong to everyone
-  const isOwned = (thing, thingKind) => {
-    const ownedIds = thingKind === "item" ? wallet.ownedItemIds : wallet.ownedAvatarIds
+  const isOwned = (thing, kind) => {
+    const ownedIds = kind === 'item' ? wallet.ownedItemIds : wallet.ownedAvatarIds
     return thing.price === 0 || ownedIds.includes(thing._id)
   }
 
-  // only fish can be worn
-  const isEquipped = (avatar) => avatar._id === equipped?._id
-
-  // is this exact tile picked
-  const isPicked = (thingKind, id) => selection?.kind === thingKind && selection?.id === id
-
-  // preview shows picked fish or item, or user's current fish
-  const shown = selected ?? equipped
-  const shownKind = selected ? kind : "avatar"
-
-  // text under each tile
-  const tileLabel = (thing, thingKind) => {
-    if (thingKind === "avatar" && isEquipped(thing)) return "In use"
-    if (isOwned(thing, thingKind)) return thing.price === 0 ? "Free" : "Owned"
-    return `${thing.price}`
-  }
-
-  // can user pay for picked thing
-  const canAfford = selected ? wallet.points >= selected.price : false
-
-  // pick a fish or item
-  const handleSelect = (thingKind, thing) => {
-    setSelection({ kind: thingKind, id: thing._id })
-    setMessage("")
-  }
+  // thing the popup is about
+  const pendingThing = pending
+    ? (pending.kind === 'item' ? items : avatars).find((thing) => thing._id === pending.id)
+    : undefined
+  const canAfford = pendingThing ? wallet.points >= pendingThing.price : false
 
   // open buy popup
-  const openBuy = () => {
-    setBuyError("")
+  const openBuy = (kind, thing) => {
+    setPending({ kind, id: thing._id })
+    setBuyError('')
+    setShopkeeperNote('')
     buyDialog.current.showModal()
   }
 
-  // buy picked fish or item
+  // buy the thing in the popup
   const handleBuy = async () => {
     setBusy(true)
-    setBuyError("")
+    setBuyError('')
     try {
-      const route = kind === "item" ? "items" : "avatars"
-      const updated = await api(`/api/${route}/${selected._id}/purchase`, { method: "POST" })
+      const route = pending.kind === 'item' ? 'items' : 'avatars'
+      const updated = await api(`/api/${route}/${pendingThing._id}/purchase`, { method: 'POST' })
 
       // use new balance and owned things from server
       setWallet((prev) => ({ ...prev, ...updated }))
-
       buyDialog.current.close()
-      setMessage(`You bought ${selected.name}!`)
+      setShopkeeperNote(`${pendingThing.name} is yours. Enjoy!`)
     } catch (error) {
-      // not enough points, already owned, server down
+      // not enough coins, already owned, server down
       setBuyError(error.message)
     } finally {
       setBusy(false)
     }
   }
 
-  // wear picked fish in sessions
-  const handleEquip = async () => {
+  // wear a fish in sessions
+  const handleEquip = async (avatar) => {
     setBusy(true)
     try {
-      await api("/api/users/me/avatar", { method: "PATCH", body: { avatarId: selected._id } })
-      setWallet((prev) => ({ ...prev, avatarId: selected._id }))
-      setMessage(`${selected.name} is now your fish.`)
+      await api('/api/users/me/avatar', { method: 'PATCH', body: { avatarId: avatar._id } })
+      setWallet((prev) => ({ ...prev, avatarId: avatar._id }))
+      setShopkeeperNote(`${avatar.name} looks wonderful on you.`)
     } catch (error) {
-      setMessage(error.message)
+      setShopkeeperNote(error.message)
     } finally {
       setBusy(false)
     }
   }
 
-  // button under preview
-  let action = { label: "Buy", disabled: true, onClick: undefined }
-  if (selected) {
-    if (!isOwned(selected, kind)) action = { label: "Buy", disabled: false, onClick: openBuy }
-    else if (kind === "item") action = { label: "Owned", disabled: true, onClick: undefined }
-    else if (isEquipped(selected)) action = { label: "In use", disabled: true, onClick: undefined }
-    else action = { label: "Use", disabled: false, onClick: handleEquip }
+  // what a product's button says and does
+  const actionFor = (kind, thing) => {
+    if (!isOwned(thing, kind)) {
+      return { label: `Buy · ${thing.price} coins`, disabled: false, onClick: () => openBuy(kind, thing) }
+    }
+    if (kind === 'item') return { label: 'Owned', disabled: true }
+    if (thing._id === equipped?._id) return { label: 'In use', disabled: true }
+    return { label: 'Use', disabled: busy, onClick: () => handleEquip(thing) }
   }
 
+  const activeTab = TABS.find((tab) => tab.kind === activeKind)
+  const products = activeKind === 'item' ? items : avatars
+
   return (
-    <main className="scene shop-scene">
-      <div className="shop-container">
+    <div className="shop-page">
+      {/* ---------- the shop and its keeper ---------- */}
+      <aside className="shop-portrait environment env-shop" style={environmentStyle('shopBackground')}>
+        <button type="button" className="shop-back" onClick={() => navigate('/tank')}>
+          <IoArrowBack size={14} aria-hidden="true" /> Your Tank
+        </button>
+        <div className="shop-sign">
+          <h2>Russ&rsquo;s Reef Shop</h2>
+          <p>A few treasures. A lot of heart.</p>
+        </div>
+      </aside>
 
-        {/* preview box */}
-        <section className="shop-preview card" aria-live="polite">
-
-          {/* image display */}
-          <div className="preview-image">
-            {shown && <img src={imageFor(shownKind, shown.imageKey)} alt={shown.name} />}
+      <div className="shop-main">
+        {/* ---------- greeting and balance ---------- */}
+        <section className="shop-greeting">
+          <div className="shop-greeting-text" aria-live="polite">
+            <span className="shop-eyebrow">RUSS · YOUR SHOPKEEPER</span>
+            <h1>&ldquo;Let&rsquo;s find a little something for you.&rdquo;</h1>
+            <p>Make a little splash. Every unlock is yours to keep.</p>
+            <strong>{shopkeeperNote || 'What catches your eye today?'}</strong>
           </div>
-
-          {/* name of fish or item shown */}
-          {shown && <p className="preview-name">{shown.name}</p>}
-
-          {/* result of last buy or use */}
-          {message && <p className="preview-note">{message}</p>}
-
-          {/* buy, use, owned, in use, disabled */}
-          <button
-            className="btn-primary preview-buy"
-            disabled={action.disabled || busy}
-            onClick={action.onClick}
-          >
-            {action.label}
-          </button>
+          <div className="shop-balance-box">
+            <span className="shop-eyebrow">YOUR BALANCE</span>
+            <span className="shop-balance-amount">
+              <IoStarOutline size={18} aria-hidden="true" />
+              {loaded ? `${wallet.points} coins` : '…'}
+            </span>
+          </div>
         </section>
 
-        {/* side by side panels */}
-        <div className="shop-layout">
-
-          {/* avatars panel */}
-          <section className="shop-panel">
-
-            {/* title and points */}
-            <div className="shop-panel-header">
-              <h2>Avatars</h2>
-              <span className="shop-balance">{loaded ? wallet.points : "…"} pts</span>
-            </div>
-
-            {/* section description */}
-            <p className="shop-description">Customize your avatar</p>
-
-            {/* status messages */}
-            {loadError && <p className="error-msg" role="alert">{loadError}</p>}
-            {!loaded && !loadError && <p className="shop-description">Loading fish...</p>}
-
-            {/* one tile per fish from server */}
-            <div className="shop-grid">
-              {avatars.map((avatar) => (
-                <button
-                  // highlight tile when selected
-                  className={`shop-tile${isPicked("avatar", avatar._id) ? " is-selected" : ""}`}
-                  // track each item in list
-                  key={avatar._id}
-                  // screen reader label
-                  aria-label={`${avatar.name}, ${tileLabel(avatar, "avatar")}${isOwned(avatar, "avatar") ? "" : " pts"}`}
-                  // tell screen reader if selected
-                  aria-pressed={isPicked("avatar", avatar._id)}
-                  // select tile
-                  onClick={() => handleSelect("avatar", avatar)}
-                >
-                  {/* fish image */}
-                  <span className="tile-square">
-                    <img src={getFishImage(avatar.imageKey)} alt="" />
-                  </span>
-                  <span className="tile-price">{tileLabel(avatar, "avatar")}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* decorations panel */}
-          <section className="shop-panel">
-
-            {/* title and points */}
-            <div className="shop-panel-header">
-              <h2>Decorations</h2>
-              <span className="shop-balance">{loaded ? wallet.points : "…"} pts</span>
-            </div>
-
-            {/* section description */}
-            <p className="shop-description">Obtain profile decorations</p>
-
-            {/* status messages */}
-            {loadError && <p className="error-msg" role="alert">{loadError}</p>}
-            {!loaded && !loadError && <p className="shop-description">Loading decorations...</p>}
-
-            {/* one tile per item from server */}
-            <div className="shop-grid">
-              {items.map((item) => (
-                <button
-                  // highlight tile when selected
-                  className={`shop-tile${isPicked("item", item._id) ? " is-selected" : ""}`}
-                  // track each item in list
-                  key={item._id}
-                  // screen reader label
-                  aria-label={`${item.name}, ${tileLabel(item, "item")}${isOwned(item, "item") ? "" : " pts"}`}
-                  // tell screen reader if selected
-                  aria-pressed={isPicked("item", item._id)}
-                  // select tile
-                  onClick={() => handleSelect("item", item)}
-                >
-                  {/* item image */}
-                  <span className="tile-square">
-                    <img src={getItemImage(item.imageKey)} alt="" />
-                  </span>
-                  <span className="tile-price">{tileLabel(item, "item")}</span>
-                </button>
-              ))}
-            </div>
-          </section>
+        {/* ---------- tabs ---------- */}
+        <div className="shop-tabs" role="tablist" aria-label="Shop sections">
+          {TABS.map((tab) => (
+            <button
+              key={tab.kind}
+              type="button"
+              role="tab"
+              id={`shop-tab-${tab.kind}`}
+              aria-selected={activeKind === tab.kind}
+              aria-controls="shop-products"
+              className="shop-tab"
+              onClick={() => setActiveKind(tab.kind)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {/* ---------- products ---------- */}
+        <section id="shop-products" role="tabpanel" aria-labelledby={`shop-tab-${activeKind}`}>
+          <h2 className="shop-section-title">{activeTab.heading}</h2>
+          <p className="shop-section-sub">{activeTab.subheading}</p>
+
+          {loadError && <p className="shop-error" role="alert">{loadError}</p>}
+          {!loaded && !loadError && <BubbleLoader label="Setting out the shelves…" />}
+
+          <div className="shop-products">
+            {products.map((thing) => {
+              const action = actionFor(activeKind, thing)
+              return (
+                <article key={thing._id} className="product-card">
+                  <div className="product-top">
+                    <span className="product-thumb">
+                      <img src={imageFor(activeKind, thing.imageKey)} alt="" />
+                    </span>
+                    <div>
+                      <h3>{thing.name}</h3>
+                      <p>{blurbFor(activeKind, thing.name)}</p>
+                    </div>
+                  </div>
+                  <span className="product-price">
+                    <IoStarOutline size={13} aria-hidden="true" />
+                    {thing.price === 0 ? 'Free' : `${thing.price} coins`}
+                  </span>
+                  <button
+                    type="button"
+                    className="product-button"
+                    disabled={action.disabled}
+                    onClick={action.onClick}
+                  >
+                    {action.label}
+                  </button>
+                </article>
+              )
+            })}
+          </div>
+        </section>
       </div>
 
-      {/* buy popup */}
-      <dialog ref={buyDialog} className="dialog" onClose={() => setBuyError("")}>
-        {selected && (
+      {/* ---------- buy popup ---------- */}
+      <dialog ref={buyDialog} className="dialog" onClose={() => setBuyError('')}>
+        {pendingThing && (
           <>
-            <h2>Buy {selected.name}?</h2>
-
-            {/* picture of fish or item */}
-            <div className="preview-image buy-image">
-              <img src={imageFor(kind, selected.imageKey)} alt="" />
-            </div>
-
-            {/* cost and balance */}
+            <h2>Buy {pendingThing.name}?</h2>
+            <span className="product-thumb buy-thumb">
+              <img src={imageFor(pending.kind, pendingThing.imageKey)} alt="" />
+            </span>
             <p className="buy-detail">
-              This costs {selected.price} pts. You have {wallet.points} pts
-              {canAfford ? ` and will have ${wallet.points - selected.price} left.` : "."}
+              This costs {pendingThing.price} coins. You have {wallet.points} coins
+              {canAfford ? ` and will have ${wallet.points - pendingThing.price} left.` : '.'}
             </p>
-
-            {/* not enough points */}
             {!canAfford && (
-              <p className="error-msg" role="alert">
-                You need {selected.price - wallet.points} more points.
+              <p className="shop-error" role="alert">
+                You need {pendingThing.price - wallet.points} more coins.
               </p>
             )}
-
-            {/* error from server */}
-            {buyError && (
-              <p className="error-msg" role="alert">
-                {buyError}
-              </p>
-            )}
-
-            {/* popup buttons */}
+            {buyError && <p className="shop-error" role="alert">{buyError}</p>}
             <div className="dialog-actions">
-              {/* close without buying */}
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => buyDialog.current.close()}
-              >
+              <button type="button" className="btn-secondary" onClick={() => buyDialog.current.close()}>
                 Cancel
               </button>
-
-              {/* confirm buy */}
-              <button
-                type="button"
-                className="btn-primary"
-                onClick={handleBuy}
-                disabled={!canAfford || busy}
-              >
-                {busy ? "Buying..." : "Buy"}
+              <button type="button" className="btn-primary" onClick={handleBuy} disabled={!canAfford || busy}>
+                {busy ? 'Buying…' : 'Buy'}
               </button>
             </div>
           </>
         )}
       </dialog>
-    </main>
+    </div>
   )
 }
 

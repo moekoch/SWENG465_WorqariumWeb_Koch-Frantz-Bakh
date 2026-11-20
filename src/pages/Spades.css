@@ -1,27 +1,8 @@
-.spades-scene {
-  position: relative;
-  align-items: flex-start;
-  overflow-y: auto;
-}
-
-.spades-back-button {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  z-index: 1;
-  padding: 10px 16px;
-  color: var(--text-h);
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 2px 8px rgba(30, 80, 110, 0.12);
-}
-
-.spades-back-button:hover {
-  background: var(--white);
-}
-
-.spades-back-button:focus-visible {
-  outline: 3px solid var(--dark-blue);
-  outline-offset: 2px;
+/* Spades: layout only. Shared look lives in GameRoom.css */
+.spades-table { --table-width: 640px; align-items: center; }
+.spades-art {
+  display: block;
+  width: min(280px, 70%);
+  height: auto;
+  animation: game-avatar-bob 4s ease-in-out infinite;
 }

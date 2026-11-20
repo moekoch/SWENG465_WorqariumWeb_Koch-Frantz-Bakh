@@ -1,0 +1,66 @@
+.library-page { padding: 16px; box-sizing: border-box; text-align: left; }
+.library-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 24px;
+}
+.library-card h1 { font-size: 28px; color: var(--ink); }
+
+.library-room {
+  position: relative;
+  aspect-ratio: 1376 / 768;
+  min-height: 360px;
+  overflow: hidden;
+  border-radius: 20px;
+  background-size: 100% 100%;
+}
+
+.focus-panel {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(300px, 44%);
+  padding: 20px;
+  box-sizing: border-box;
+  color: #fff;
+  background: rgba(18, 64, 63, 0.94);
+  border-radius: 20px;
+}
+.focus-panel h2 { margin: 0; color: #fff; font-size: 24px; }
+.focus-panel p { color: rgba(255, 255, 255, 0.8); font-size: 13px; }
+.focus-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; color: var(--lime); }
+.focus-clock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+}
+.focus-clock-label { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; }
+.focus-clock-time { font-size: 48px; font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.focus-clock-cycle { font-size: 12px; color: rgba(255, 255, 255, 0.75); }
+.focus-button {
+  padding: 12px;
+  font: 700 15px/1 var(--sans);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: none;
+  border-radius: 12px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.focus-button:hover { transform: translateY(-2px) scale(1.02); }
+.focus-button-primary { color: var(--ink); background: var(--lime); }
+.focus-button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.focus-panel small { font-size: 10px; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.7); }
+
+@media (max-width: 700px) {
+  .focus-panel { position: static; width: auto; margin: 12px; }
+  .library-room { aspect-ratio: auto; display: flex; flex-direction: column; justify-content: flex-end; }
+}

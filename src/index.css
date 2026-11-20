@@ -5,15 +5,19 @@
 :root {
   /* color palette */
   --white: #ffffff;
+  --ink: #12403f;          /* deep teal: text on light, primary buttons */
+  --mint: #eaf6f2;         /* soft surfaces */
+  --lime: #d4f070;         /* highlights and "you" */
   --light-green: #a0e020;
   --dark-green: #60c020;
-  --blue-gray: #c0e0e0;
-  --light-blue: #80c0e0;
-  --dark-blue: #60a0c0;
-  --dark-blue-hover: #4f88a8;
+  --blue-gray: #dff3ef;
+  --light-blue: #8fe3dc;
+  /* older pages use these two for buttons: now deep teal */
+  --dark-blue: #12403f;
+  --dark-blue-hover: #0c2e2d;
 
   /* semantic colors */
-  --text: #666666;
+  --text: #4f6b69;
   --text-h: #000000;
   --error: #FF0000;
   --bg: var(--blue-gray);
@@ -55,7 +59,7 @@ body {
 /* fill screen and stack vertically */
 #root {
   width: 100%;
-  min-height: 100svh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -64,20 +68,58 @@ body {
   overflow: hidden;
 }
 
-/* ocean scene */
+/* ocean scene (default page background inside the shell) */
 .scene {
-  flex: 1;
-  min-height: 100svh;
+  flex: 1 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 24px 96px;
+  padding: 24px;
   box-sizing: border-box;
   background:
-    linear-gradient(to bottom, var(--white) 0%, rgba(255, 255, 255, 0) 14%),
-    linear-gradient(to bottom, var(--light-blue) 0%, #8fdcff 30%, #7ec4f5 100%);
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 18%),
+    linear-gradient(to bottom, #a9ece4 0%, #6fd0cf 45%, #3fa6b5 100%);
   background-size: cover;
   background-position: center;
+}
+
+/* a room whose background is an image (src/assets/environment/*) */
+.environment {
+  background-size: cover;
+  background-position: center;
+}
+/* gradients used until that room's image is added */
+.env-map     { background-image: linear-gradient(#5cc6d8, #1f7a96); }
+.env-tank    { background-image: linear-gradient(180deg, #b9efe9 0%, #8fdcd6 55%, #f3e9c8 56%, #f7efd5 100%); }
+.env-library { background-image: linear-gradient(180deg, #bdeee7 0%, #7ccfc7 100%); }
+.env-games   { background-image: linear-gradient(180deg, #a6e6df 0%, #6cc5c6 70%, #efe6c4 100%); }
+
+/* anyone who asks their device for less motion gets still water */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+  .ambient-bubbles { display: none; }
+}
+
+/* Settings > Reduced motion: same still water as the device-level setting */
+:root[data-reduced-motion='true'] *,
+:root[data-reduced-motion='true'] *::before,
+:root[data-reduced-motion='true'] *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+}
+:root[data-reduced-motion='true'] .ambient-bubbles { display: none; }
+
+/* Settings > Text size */
+:root[data-text-size='large'] { font-size: 20px; }
+:root[data-text-size='larger'] { font-size: 22px; }
+@media (max-width: 1024px) {
+  :root[data-text-size='large'] { font-size: 18px; }
+  :root[data-text-size='larger'] { font-size: 20px; }
 }
 
 /* shared typography style */
@@ -156,7 +198,7 @@ button {
   color: var(--white);
   background: var(--dark-blue);
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
@@ -184,13 +226,13 @@ button {
   color: var(--text-h);
   background: transparent;
   border: 2px solid var(--dark-blue);
-  border-radius: 6px;
+  border-radius: 12px;
   transition: background-color 0.15s ease;
 }
 
 /* hover over button */
 .btn-secondary:hover {
-  background: rgba(96, 160, 192, 0.15);
+  background: rgba(18, 64, 63, 0.08);
 }
 
 /* keyboard focus ring */

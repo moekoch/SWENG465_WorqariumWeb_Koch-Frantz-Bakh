@@ -1,7 +1,9 @@
+import BubbleLoader from '../components/BubbleLoader.jsx'
+
 function Loading() {
   return (
     <main className="scene">
-      <h1>Loading</h1>
+      <BubbleLoader label="Loading…" />
     </main>
   )
 }

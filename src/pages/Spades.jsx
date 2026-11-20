@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import shark from "../assets/fish/shark.png"
+import spadesImage from "../assets/games/Spades.png"
+import { environmentStyle } from "../environmentImages.js"
+import "./GameRoom.css"
 import "./Spades.css"
 
 const cardImages = import.meta.glob("../assets/cards/*.png", {
@@ -49,16 +52,21 @@ function Spades() {
     setDeck(createDeck())
   }, [])
   return (
-    <main className="scene spades-scene">
-        <button 
-          className="spades-back-button" 
-          type="button"
-          onClick={() => navigate("-1")}
-        >
-          ← Back
-        </button>
-    </main>
-    )
-  }
+    <main
+      className="scene game-room environment env-games spades-scene"
+      style={environmentStyle("gamesBackground")}
+    >
+      <button className="game-back" type="button" onClick={() => navigate(-1)}>
+        ← Back
+      </button>
 
-  export default Spades
+      <div className="game-table spades-table">
+        <h1>Spades</h1>
+        <p className="game-message">The Spades table is still being set up.</p>
+        <img className="spades-art" src={spadesImage} alt="" aria-hidden="true" />
+      </div>
+    </main>
+  )
+}
+
+export default Spades

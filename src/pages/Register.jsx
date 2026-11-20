@@ -1,6 +1,9 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { API_URL } from "../api.js"
+import AmbientBubbles from "../components/AmbientBubbles.jsx"
+import { environmentStyle } from "../environmentImages.js"
+import "./Auth.css"
 
 function Register() {
   const navigate = useNavigate()
@@ -13,6 +16,9 @@ function Register() {
   // error messages
   const [error, setError] = useState("")
 
+  // true while waiting for the server
+  const [submitting, setSubmitting] = useState(false)
+
   // run when form submitted
   async function handleSubmit(e) {
     // stop the browser from reloading the page
@@ -20,6 +26,7 @@ function Register() {
 
     // clear previous errors
     setError("")
+    setSubmitting(true)
 
     try {
       // send new user's info to server
@@ -30,36 +37,41 @@ function Register() {
       })
       const data = await res.json()
 
-      // check for erros in server response
+      // check for errors in server response
       if (!res.ok) {
         setError(data.error || "Registration failed")
         return
       }
 
       // go to login after registering
-        navigate("/")
+      navigate("/")
     } catch {
       // network failure or server down
       setError("Could not reach the server")
+    } finally {
+      setSubmitting(false)
     }
   }
 
   return (
-    <main className="scene">
-      {/* aria for screen reader accouncing section */}
-      <section className="card card-center" aria-labelledby="login-heading">
+    <main className="auth-scene environment env-map" style={environmentStyle("mapBackground")}>
+      <AmbientBubbles />
 
-        {/* title above form */}
-        <h1 id="login-heading">Register</h1>
+      <section className="auth-card" aria-labelledby="register-heading">
+        <div className="auth-brand">
+          <span className="auth-logo" aria-hidden="true" />
+          Worqarium
+        </div>
+
+        <div>
+          <h1 id="register-heading">Make a little home.</h1>
+          <p className="auth-intro">Create an account to get your own fish and tank.</p>
+        </div>
 
         {/* registration form */}
         <form className="form" onSubmit={handleSubmit}>
-
-          {/* username section */}
           <div className="field">
-            {/* username label */}
             <label htmlFor="username">Username</label>
-            {/* username input */}
             <input
               id="username"
               type="text"
@@ -70,11 +82,8 @@ function Register() {
             />
           </div>
 
-          {/* email section */}
           <div className="field">
-            {/* email label */}
             <label htmlFor="email">Email</label>
-            {/* email input */}
             <input
               id="email"
               type="email"
@@ -85,11 +94,8 @@ function Register() {
             />
           </div>
 
-          {/* password section */}
           <div className="field">
-            {/* password label */}
             <label htmlFor="password">Password</label>
-            {/* password input */}
             <input
               id="password"
               type="password"
@@ -100,16 +106,21 @@ function Register() {
             />
           </div>
 
-          {/* go to login */}
-          <p className="form-link">
-            Already have an account? <Link to="/">Log In</Link>
-          </p>
-
           {/* error message */}
-          {error && <p className="error-msg" role="alert">ⓧ {error}</p>}
+          {error && <p className="auth-error" role="alert">{error}</p>}
 
           {/* submission button */}
-          <button type="submit" className="btn-primary">Create Account</button>
+          <button type="submit" className="auth-submit" disabled={submitting}>
+            {submitting && (
+              <span className="auth-bubbles" aria-hidden="true"><i /><i /><i /></span>
+            )}
+            {submitting ? "Creating…" : "Create account"}
+          </button>
+
+          {/* go to login */}
+          <p className="form-link">
+            Already have an account? <Link to="/">Log in</Link>
+          </p>
         </form>
       </section>
     </main>

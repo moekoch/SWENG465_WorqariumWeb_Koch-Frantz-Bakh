@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import shark from "../assets/fish/shark.png"
+import { environmentStyle } from "../environmentImages.js"
+import "./GameRoom.css"
 import "./GoFish.css"
 
 const cardImages = import.meta.glob("../assets/cards/*.png", {
@@ -223,28 +225,31 @@ function GoFish() {
   )
 
   return (
-    <main className="scene go-fish-scene">
+    <main
+      className="scene game-room environment env-games go-fish-scene"
+      style={environmentStyle("gamesBackground")}
+    >
       <button
-        className="go-fish-back-button"
+        className="game-back"
         type="button"
         onClick={() => navigate(-1)}
       >
         ← Back
       </button>
-      <div className="go-fish-table">
+      <div className="game-table go-fish-table">
         <h1>Go Fish</h1>
-        <p className="go-fish-message" aria-live="polite">
+        <p className="game-message" aria-live="polite">
           {game.message}
         </p>
 
-        <section className="go-fish-opponent" aria-label="Shark's hand">
-          <img className="go-fish-shark" src={shark} alt="" aria-hidden="true" />
+        <section className="game-seat go-fish-opponent" aria-label="Shark's hand">
+          <img className="game-avatar go-fish-shark" src={shark} alt="" aria-hidden="true" />
           <div className="go-fish-opponent-content">
             <h2>Shark · {game.computerHand.length} cards</h2>
             <div className="go-fish-card-row">
               {game.computerHand.map((card) => (
                 <img
-                  className="go-fish-card-back"
+                  className="game-card go-fish-card-back"
                   key={card.code}
                   src={cardImages["../assets/cards/gray_back.png"]}
                   alt="Face-down card"
@@ -252,7 +257,7 @@ function GoFish() {
               ))}
               {game.computerHand.length === 0 && <span>No cards</span>}
             </div>
-            <p className="go-fish-books">Books: {game.computerBooks.length}</p>
+            <p className="game-chip go-fish-books">Books: {game.computerBooks.length}</p>
           </div>
           <div className="go-fish-deck" aria-label="Cards remaining">
           {game.deck.length > 0 ? (
@@ -267,12 +272,15 @@ function GoFish() {
         </div>
         </section>
 
-        <section className="go-fish-player" aria-label="Your hand">
+        <section
+          className={`game-seat go-fish-player${game.turn === "player" && !game.gameOver ? " is-your-turn" : ""}`}
+          aria-label="Your hand"
+        >
           <h2>Your hand · {game.playerHand.length} cards</h2>
           <div className="go-fish-player-hand">
             {sortedPlayerHand.map((card) => (
               <button
-                className="go-fish-player-card"
+                className="game-card-button go-fish-player-card"
                 key={card.code}
                 type="button"
                 disabled={game.turn !== "player" || game.gameOver}
@@ -280,18 +288,18 @@ function GoFish() {
                 aria-label={`Ask for ${formatRank(card.rank)}s`}
                 title={`Ask for ${formatRank(card.rank)}s`}
               >
-                <img src={card.image} alt={`${formatRank(card.rank)} playing card`} />
+                <img className="game-card" src={card.image} alt={`${formatRank(card.rank)} playing card`} />
               </button>
             ))}
             {game.playerHand.length === 0 && <span>No cards in your hand</span>}
           </div>
-          <p className="go-fish-books">Your books: {game.playerBooks.length}</p>
+          <p className="game-chip go-fish-books">Your books: {game.playerBooks.length}</p>
         </section>
       </div>
       {game.gameOver && (
-        <div className="go-fish-game-over">
+        <div className="game-over">
           <section
-            className="go-fish-game-over-card"
+            className="game-over-card"
             role="dialog"
             aria-modal="true"
             aria-labelledby="go-fish-game-over-heading"

@@ -1,0 +1,136 @@
+.map-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* the artwork is 1376 x 768, so the stage keeps that shape and every fraction lines up */
+.map-stage {
+  position: relative;
+  container-type: inline-size; /* lets fish size themselves in cqw units */
+  width: min(100%, calc((100svh - var(--chrome-h) - 24px) * 1.7917));
+  aspect-ratio: 1376 / 768;
+  overflow: hidden;
+  border-radius: 28px;
+  background-color: #2a8aa5;
+  background-size: 100% 100%;
+  background-position: center;
+  box-shadow: 0 10px 40px rgba(10, 60, 80, 0.28);
+  cursor: pointer;
+  text-align: left;
+}
+
+.map-title-card {
+  position: absolute;
+  top: 4%;
+  left: 3%;
+  max-width: 34%;
+  padding: 1.4cqw 2cqw;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 1.6cqw;
+  pointer-events: none;
+}
+.map-title-card h1 {
+  font-size: clamp(16px, 2.4cqw, 30px);
+  color: var(--ink);
+}
+.map-title-card p {
+  font-size: clamp(11px, 1.15cqw, 15px);
+}
+
+/* transparent button over each place with a speech-bubble label */
+.map-hotspot {
+  position: absolute;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 40px;
+  z-index: 200; /* above fish, which max out at 100 */
+}
+.map-hotspot:hover,
+.map-hotspot:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+  outline: 3px solid rgba(255, 255, 255, 0.85);
+}
+.map-hotspot-label {
+  position: absolute;
+  top: -2%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0.9cqw 1.6cqw;
+  text-align: left;
+  white-space: nowrap;
+  background: #f6fadc;
+  border-radius: 1.4cqw;
+  box-shadow: 0 4px 14px rgba(10, 60, 80, 0.25);
+  transform: translateX(-50%);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: map-label-bob 4s ease-in-out infinite;
+}
+.map-hotspot:hover .map-hotspot-label,
+.map-hotspot:focus-visible .map-hotspot-label {
+  transform: translateX(-50%) translateY(-6px) scale(1.06);
+}
+.map-hotspot-label strong {
+  font-size: clamp(13px, 1.7cqw, 22px);
+  color: var(--ink);
+}
+.map-hotspot-label small {
+  font-size: clamp(10px, 1cqw, 13px);
+  color: var(--text);
+}
+@keyframes map-label-bob {
+  0%, 100% { margin-top: 0; }
+  50%      { margin-top: -4px; }
+}
+
+/* click burst: five bubbles float up and fade */
+.bubble-burst {
+  position: absolute;
+  z-index: 150;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.bubble-burst i {
+  position: absolute;
+  width: 1.2cqw;
+  height: 1.2cqw;
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.3);
+  animation: bubble-burst-pop 0.85s ease-out forwards;
+}
+.bubble-burst i:nth-child(1) { --burst-x: -22px; --burst-y: -30px; }
+.bubble-burst i:nth-child(2) { --burst-x: 4px;   --burst-y: -46px; animation-delay: 0.05s; }
+.bubble-burst i:nth-child(3) { --burst-x: 26px;  --burst-y: -28px; animation-delay: 0.1s; }
+.bubble-burst i:nth-child(4) { --burst-x: -10px; --burst-y: -18px; animation-delay: 0.15s; }
+.bubble-burst i:nth-child(5) { --burst-x: 14px;  --burst-y: -58px; animation-delay: 0.2s; }
+@keyframes bubble-burst-pop {
+  0%   { transform: translate(0, 0) scale(0.3); opacity: 1; }
+  80%  { opacity: 0.9; }
+  100% { transform: translate(var(--burst-x), var(--burst-y)) scale(1.5); opacity: 0; }
+}
+
+.map-status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 300;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  transform: translate(-50%, -50%);
+}
+.map-error {
+  font-size: 16px;
+  max-width: 70%;
+}

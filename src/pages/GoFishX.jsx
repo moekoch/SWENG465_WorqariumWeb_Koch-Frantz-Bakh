@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import shark from "../assets/fish/shark.png"
-import { connectSocket, disconnectSocket } from "../socket.js"
+import { connectSocket } from "../socket.js"
+import { environmentStyle } from "../environmentImages.js"
+import "./GameRoom.css"
 import "./GoFish.css"
 
 const cardImages = import.meta.glob("../assets/cards/*.png", {
@@ -65,6 +67,9 @@ function GoFishX() {
 
     socket.on("connect", handleConnect)
     socket.on("disconnect", handleDisconnect)
+    // the shared socket is usually already connected by the time this page opens,
+    // so "connect" won't fire again
+    if (socket.connected) handleConnect()
     socket.on("gofish:state", handleState)
     socket.on("gofish:waiting", handleWaiting)
     socket.on("gofish:error", handleError)
@@ -75,8 +80,8 @@ function GoFishX() {
       socket.off("gofish:state", handleState)
       socket.off("gofish:waiting", handleWaiting)
       socket.off("gofish:error", handleError)
+      // leave the game but keep the app-wide connection (map + friends use it too)
       socket.emit("gofish:leave")
-      disconnectSocket()
     }
   }, [])
 
@@ -105,28 +110,31 @@ function GoFishX() {
   )
 
   return (
-    <main className="scene go-fish-scene">
+    <main
+      className="scene game-room environment env-games go-fish-scene"
+      style={environmentStyle("gamesBackground")}
+    >
       <button
-        className="go-fish-back-button"
+        className="game-back"
         type="button"
         onClick={() => navigate("/games")}
       >
         ← Back
       </button>
-      <div className="go-fish-table">
+      <div className="game-table go-fish-table">
         <h1>Go Fish · Challenge</h1>
-        <p className="go-fish-message" aria-live="polite">
+        <p className="game-message" aria-live="polite">
           {game?.message ?? "Challenge another player to a live Go Fish game."}
         </p>
 
         {error && (
-          <p className="go-fish-error" role="alert">
+          <p className="game-error" role="alert">
             {error}
           </p>
         )}
 
         {!game && (
-          <section className="go-fish-lobby card" aria-labelledby="challenge-heading">
+          <section className="go-fish-lobby" aria-labelledby="challenge-heading">
             <h2 id="challenge-heading">Play against another user</h2>
             <p>
               {connected
@@ -146,8 +154,8 @@ function GoFishX() {
 
         {game && (
           <>
-            <section className="go-fish-opponent" aria-label="Opponent's hand">
-              <img className="go-fish-shark" src={shark} alt="" aria-hidden="true" />
+            <section className="game-seat go-fish-opponent" aria-label="Opponent's hand">
+              <img className="game-avatar go-fish-shark" src={shark} alt="" aria-hidden="true" />
               <div className="go-fish-opponent-content">
                 <h2>
                   {game.opponent?.username ??
@@ -159,7 +167,7 @@ function GoFishX() {
                     <div className="go-fish-card-row">
                       {Array.from({ length: game.opponent.cardCount }, (_, index) => (
                         <img
-                          className="go-fish-card-back"
+                          className="game-card go-fish-card-back"
                           key={index}
                           src={cardImages["../assets/cards/gray_back.png"]}
                           alt="Face-down card"
@@ -167,7 +175,7 @@ function GoFishX() {
                       ))}
                       {game.opponent.cardCount === 0 && <span>No cards</span>}
                     </div>
-                    <p className="go-fish-books">
+                    <p className="game-chip go-fish-books">
                       Books: {game.opponent.books}
                     </p>
                   </>
@@ -186,7 +194,10 @@ function GoFishX() {
             </section>
 
             {game.status === "playing" && (
-              <section className="go-fish-player" aria-label="Your hand">
+              <section
+                className={`game-seat go-fish-player${myTurn ? " is-your-turn" : ""}`}
+                aria-label="Your hand"
+              >
                 <h2>
                   Your hand · {game.hand.length} cards
                   {myTurn ? " · Your turn" : " · Opponent's turn"}
@@ -194,7 +205,7 @@ function GoFishX() {
                 <div className="go-fish-player-hand">
                   {sortedHand.map((card) => (
                     <button
-                      className="go-fish-player-card"
+                      className="game-card-button go-fish-player-card"
                       key={card.code}
                       type="button"
                       disabled={!myTurn}
@@ -203,6 +214,7 @@ function GoFishX() {
                       title={`Ask for ${formatRank(card.rank)}s`}
                     >
                       <img
+                        className="game-card"
                         src={imageForCard(card.code)}
                         alt={`${formatRank(card.rank)} playing card`}
                       />
@@ -210,12 +222,12 @@ function GoFishX() {
                   ))}
                   {game.hand.length === 0 && <span>No cards in your hand</span>}
                 </div>
-                <p className="go-fish-books">Your books: {game.books.length}</p>
+                <p className="game-chip go-fish-books">Your books: {game.books.length}</p>
               </section>
             )}
 
             {game.status === "finished" && (
-              <section className="go-fish-game-over-card">
+              <section className="game-over-card">
                 <h2>{game.winner === game.youId ? "You win!" : "Challenge complete"}</h2>
                 <p>
                   You collected {game.books.length} books. {game.opponent?.username}{" "}

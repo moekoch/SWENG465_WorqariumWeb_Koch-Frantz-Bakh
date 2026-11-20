@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import shark from "../assets/fish/shark.png"
+import { environmentStyle } from "../environmentImages.js"
+import "./GameRoom.css"
 import "./Blackjack.css"
 
 const cardImages = import.meta.glob("../assets/cards/*.png", {
@@ -169,7 +171,7 @@ function PlayingCards({ cards, hideSecondCard = false }) {
     <div className="blackjack-card-row">
       {cards.map((card, index) => (
         <img
-          className="blackjack-card"
+          className="game-card blackjack-card"
           key={card.code}
           src={hideSecondCard && index === 1 ? cardBack : card.image}
           alt={
@@ -190,26 +192,29 @@ function Blackjack() {
   const showDealerScore = game.phase === "finished"
 
   return (
-    <main className="scene blackjack-scene">
+    <main
+      className="scene game-room environment env-games blackjack-scene"
+      style={environmentStyle("gamesBackground")}
+    >
       <button
-        className="blackjack-back-button"
+        className="game-back"
         type="button"
         onClick={() => navigate(-1)}
       >
         ← Back
       </button>
 
-      <div className="blackjack-table">
+      <div className="game-table blackjack-table">
         <h1>Blackjack</h1>
-        <p className="blackjack-message" aria-live="polite">
+        <p className="game-message" aria-live="polite">
           {game.message}
         </p>
 
         <section
-          className="blackjack-hand blackjack-dealer-hand"
+          className="game-seat blackjack-hand blackjack-dealer-hand"
           aria-label="Dealer hand"
         >
-          <img className="blackjack-shark" src={shark} alt="" aria-hidden="true" />
+          <img className="game-avatar blackjack-shark" src={shark} alt="" aria-hidden="true" />
           <div className="blackjack-dealer-content">
             <div className="blackjack-hand-heading">
               <h2>Dealer</h2>
@@ -222,7 +227,10 @@ function Blackjack() {
           </div>
         </section>
 
-        <section className="blackjack-hand" aria-label="Your hand">
+        <section
+          className={`game-seat blackjack-hand${game.phase === "player" ? " is-your-turn" : ""}`}
+          aria-label="Your hand"
+        >
           <div className="blackjack-hand-heading">
             <h2>Your hand</h2>
             <span>Score: {playerScore}</span>
@@ -251,9 +259,9 @@ function Blackjack() {
         </section>
 
         {game.phase === "finished" && (
-          <div className="blackjack-game-over">
+          <div className="game-over">
             <section
-              className="blackjack-game-over-card"
+              className="game-over-card"
               role="dialog"
               aria-modal="true"
               aria-labelledby="blackjack-game-over-heading"
