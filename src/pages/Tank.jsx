@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../api.js'
 import SwimmingFish from '../components/SwimmingFish.jsx'
 import { environmentStyle } from '../environmentImages.js'
-import { DEFAULT_FISH_KEY, FISH_IMAGES, getFishImage } from '../fishImages.js'
+import { DEFAULT_FISH_KEY, getFishImage } from '../fishImages.js'
 import { getItemImage } from '../itemImages.js'
 import { useSession } from '../sessionContext.js'
 import { useShell } from '../shellContext.js'
@@ -17,8 +17,7 @@ const AVATAR_COLORS = [
   '#888888', '#111111',
 ]
 
-// browser storage keys (the first two are what the old Avatar page used)
-const FISH_KEY_STORAGE = 'selectedAvatar'
+// browser storage keys (the first is what the old Avatar page used)
 const FISH_COLOR_STORAGE = 'selectedAvatarColor'
 const LAYOUT_STORAGE = 'tankLayout'
 
@@ -31,6 +30,15 @@ function readSavedLayout() {
   }
 }
 
+// save color locally for now
+function readSavedColor() {
+  try {
+    return localStorage.getItem(FISH_COLOR_STORAGE) ?? AVATAR_COLORS[0]
+  } catch {
+    return AVATAR_COLORS[0]
+  }
+}
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
 // Your own place, like the Club Penguin igloo: swim around, decorate with
@@ -39,14 +47,19 @@ function Tank() {
   const { self } = useSession()
   const { setFriendsOpen } = useShell()
 
-  // fish + color the user picked (kept in this browser, like before)
-  const [fishKey, setFishKey] = useState(() => {
-    const savedKey = localStorage.getItem(FISH_KEY_STORAGE)
-    return savedKey in FISH_IMAGES ? savedKey : DEFAULT_FISH_KEY
-  })
-  const [fishColor, setFishColor] = useState(
-    () => localStorage.getItem(FISH_COLOR_STORAGE) ?? AVATAR_COLORS[0],
+  // currently equipped fish
+  const [savedFishKey, setSavedFishKey] = useState(
+    self?.avatarKey ?? DEFAULT_FISH_KEY,
   )
+
+  // fish being previewed in editor
+  const [fishKey, setFishKey] = useState(
+    self?.avatarKey ?? DEFAULT_FISH_KEY,
+  )
+
+  // saved and preview color
+  const [savedFishColor, setSavedFishColor] = useState(readSavedColor)
+  const [fishColor, setFishColor] = useState(readSavedColor)
 
   // where the fish is swimming inside the tank
   const [fishPosition, setFishPosition] = useState({ x: 0.5, y: 0.7 })
@@ -61,19 +74,40 @@ function Tank() {
   const [loadError, setLoadError] = useState('')
   const [layout, setLayout] = useState(readSavedLayout)
 
+  // set avatar
+  const [savingFish, setSavingFish] = useState(false)
+  const [fishError, setFishError] = useState('')
+  const [avatars, setAvatars] = useState([])
+  const [ownedAvatarIds, setOwnedAvatarIds] = useState([])
+
   // the item currently being dragged
   const [draggingItemId, setDraggingItemId] = useState(null)
   const roomRef = useRef(null)
 
+  // keep saved fish in sync with shared session
+  useEffect(() => {
+    if (self?.avatarKey) {
+      setSavedFishKey(self.avatarKey)
+
+      // do not overwrite in-progress editor selection
+      if (!isEditingFish) {
+        setFishKey(self.avatarKey)
+      }
+    }
+  }, [self?.avatarKey, isEditingFish])
+
   // load what the user owns
   useEffect(() => {
     let cancelled = false
-    Promise.all([api('/api/items'), api('/api/users/me')])
-      .then(([allItems, me]) => {
+    Promise.all([api('/api/items'), api('/api/users/me'), api('/api/avatars')])
+      .then(([allItems, me, allAvatars]) => {
         if (cancelled) return
         const ownedIds = me.ownedItemIds ?? []
+        const ownedAvatarIds = me.ownedAvatarIds ?? []
         // free items belong to everyone
         setOwnedItems(allItems.filter((item) => item.price === 0 || ownedIds.includes(item._id)))
+        setAvatars(allAvatars)
+        setOwnedAvatarIds(ownedAvatarIds)
         setPoints(me.points)
       })
       .catch(() => {
@@ -129,14 +163,67 @@ function Tank() {
   }
   const handleDecorPointerUp = () => setDraggingItemId(null)
 
-  // save fish choice
-  const saveFish = () => {
-    localStorage.setItem(FISH_KEY_STORAGE, fishKey)
-    localStorage.setItem(FISH_COLOR_STORAGE, fishColor)
-    setIsEditingFish(false)
+  // only show fish user owns or are free
+  const availableAvatars = avatars.filter(
+    (avatar) =>
+      avatar.price === 0 || ownedAvatarIds.includes(avatar._id),
+  )
+
+  // closing without saving discards preview selections
+  const toggleFishEditor = () => {
+    if (isEditingFish) {
+      setFishKey(savedFishKey)
+      setFishColor(savedFishColor)
+      setFishError('')
+      setIsEditingFish(false)
+    } else {
+      setFishKey(savedFishKey)
+      setFishColor(savedFishColor)
+      setFishError('')
+      setIsEditingFish(true)
+    }
+  }
+
+  // equip selected fish
+  const saveFish = async () => {
+    const selectedAvatar = availableAvatars.find(
+      (avatar) => avatar.imageKey === fishKey,
+    )
+
+    if (!selectedAvatar) {
+      setFishError('You do not own that fish yet.')
+      return
+    }
+
+    setSavingFish(true)
+    setFishError('')
+
+    try {
+      await api('/api/users/me/avatar', {
+        method: 'PATCH',
+        body: { avatarId: selectedAvatar._id },
+      })
+
+      // save selected color locally
+      localStorage.setItem(FISH_COLOR_STORAGE, fishColor)
+      setSavedFishColor(fishColor)
+
+      // update displayed equipped fish
+      setSavedFishKey(fishKey)
+
+      setIsEditingFish(false)
+    } catch (error) {
+      setFishError(error.message || 'Could not equip that fish.')
+    } finally {
+      setSavingFish(false)
+    }
   }
 
   const placedItems = ownedItems.filter((item) => layout[item._id])
+
+  // ehile editing show preview, otherwise show saved fish
+  const displayedFishKey = isEditingFish ? fishKey : savedFishKey
+  const displayedFishColor = isEditingFish ? fishColor : savedFishColor
 
   return (
     <div className="tank-page">
@@ -173,17 +260,19 @@ function Tank() {
             />
           ))}
 
-          <SwimmingFish
-            player={{
-              id: 'tank-self',
-              username: self?.username ?? 'You',
-              avatarKey: fishKey,
-              x: fishPosition.x,
-              y: fishPosition.y,
-            }}
-            isSelf
-            tint={fishColor}
-          />
+          {/* preview selected fish and color without equipping until Save */}
+          {self && (
+            <SwimmingFish
+              player={{
+                ...self,
+                avatarKey: displayedFishKey,
+                x: fishPosition.x,
+                y: fishPosition.y,
+              }}
+              isSelf
+              tint={displayedFishColor}
+            />
+          )}
         </div>
 
         <footer className="tank-room-footer">
@@ -209,9 +298,9 @@ function Tank() {
             type="button"
             className="tank-button"
             aria-expanded={isEditingFish}
-            onClick={() => setIsEditingFish((open) => !open)}
+            onClick={toggleFishEditor}
           >
-            Customize your fish
+            {isEditingFish ? 'Close fish editor' : 'Customize your fish'}
           </button>
           <button type="button" className="tank-button" onClick={() => setFriendsOpen(true)}>
             Invite friends
@@ -221,20 +310,30 @@ function Tank() {
           {isEditingFish && (
             <div className="fish-editor">
               <h3>Fish</h3>
-              <div className="fish-editor-fish">
-                {Object.keys(FISH_IMAGES).map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    className="fish-choice"
-                    aria-pressed={fishKey === key}
-                    aria-label={`Fish ${key}`}
-                    onClick={() => setFishKey(key)}
-                  >
-                    <img src={getFishImage(key)} alt="" />
-                  </button>
-                ))}
-              </div>
+              {availableAvatars.length === 0 ? (
+                <p className="tank-card-text">
+                  No fish available yet. Visit the store to get one.
+                </p>
+              ) : (
+                <div className="fish-editor-fish">
+                  {availableAvatars.map((avatar) => (
+                    <button
+                      key={avatar._id}
+                      type="button"
+                      className="fish-choice"
+                      aria-pressed={fishKey === avatar.imageKey}
+                      aria-label={`Fish ${avatar.name}`}
+                      disabled={savingFish}
+                      onClick={() => {
+                        setFishKey(avatar.imageKey)
+                        setFishError('')
+                      }}
+                    >
+                      <img src={getFishImage(avatar.imageKey)} alt="" />
+                    </button>
+                  ))}
+                </div>
+              )}
               <h3>Color</h3>
               <div className="fish-editor-colors">
                 {AVATAR_COLORS.map((color, index) => (
@@ -245,12 +344,20 @@ function Tank() {
                     style={{ '--tile-color': color }}
                     aria-pressed={fishColor === color}
                     aria-label={`Color ${index + 1}`}
-                    onClick={() => setFishColor(color)}
+                    onClick={() => {
+                      setFishColor(color)
+                      setFishError('')
+                    }}
                   />
                 ))}
               </div>
-              <button type="button" className="tank-button tank-button-primary" onClick={saveFish}>
-                Save fish
+              {fishError && (
+                <p className="tank-card-text" role="alert">
+                  {fishError}
+                </p>
+              )}
+              <button type="button" className="tank-button tank-button-primary" onClick={saveFish} disabled={savingFish || availableAvatars.length === 0}>
+                {savingFish ? 'Saving...' : 'Save fish'}
               </button>
             </div>
           )}
