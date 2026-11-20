@@ -45,6 +45,13 @@ export function SessionProvider({ children }) {
     const handleMove = ({ id, x, y }) => {
       setPlayers((prev) => (prev[id] ? { ...prev, [id]: { ...prev[id], x, y } } : prev))
     }
+
+    // someone changed their fish
+    const handleAvatar = ({ id, avatarKey }) => {
+      setSelf((prev) => (prev && prev.id === id ? { ...prev, avatarKey } : prev))
+      setPlayers((prev) => (prev[id] ? { ...prev, [id]: { ...prev[id], avatarKey } } : prev))
+    }
+
     const handleLeave = ({ id }) => {
       setPlayers((prev) => {
         const next = { ...prev }
@@ -69,6 +76,7 @@ export function SessionProvider({ children }) {
     socket.on('session:players', handlePlayers)
     socket.on('player:join', handleJoin)
     socket.on('player:move', handleMove)
+    socket.on('player:avatar', handleAvatar)
     socket.on('player:leave', handleLeave)
     socket.on('session:error', handleSessionError)
     socket.on('connect_error', handleConnectError)
@@ -81,6 +89,7 @@ export function SessionProvider({ children }) {
       socket.off('session:players', handlePlayers)
       socket.off('player:join', handleJoin)
       socket.off('player:move', handleMove)
+      socket.off('player:avatar', handleAvatar)
       socket.off('player:leave', handleLeave)
       socket.off('session:error', handleSessionError)
       socket.off('connect_error', handleConnectError)
