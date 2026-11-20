@@ -5,11 +5,11 @@ import { clearToken } from '../api.js'
 import { SessionProvider } from '../SessionProvider.jsx'
 import { useSession } from '../sessionContext.js'
 import { ShellContext } from '../shellContext.js'
-import { useFriends } from '../friends.js'
+// import { useFriends } from '../friends.js'
 import AmbientBubbles from './AmbientBubbles.jsx'
 import BubbleLoader from './BubbleLoader.jsx'
 import Dock from './Dock.jsx'
-import FriendsPanel from './FriendsPanel.jsx'
+// import FriendsPanel from './FriendsPanel.jsx'
 import './AppShell.css'
 
 // breadcrumb text for each route (longest matching prefix wins)
@@ -30,7 +30,7 @@ function ShellFrame() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { self, error } = useSession()
-  const friends = useFriends()
+  const friends = [] // const friends = useFriends()
   const [friendsOpen, setFriendsOpen] = useState(false)
 
   const roomName = ROOM_NAMES.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? ''
@@ -97,9 +97,9 @@ function ShellFrame() {
 
         <Dock />
 
-        <div id="friends-panel">
+        {/*<div id="friends-panel">
           <FriendsPanel open={friendsOpen} onClose={() => setFriendsOpen(false)} />
-        </div>
+        </div>*/}
       </div>
     </ShellContext.Provider>
   )
