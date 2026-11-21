@@ -1,8 +1,8 @@
 /* the whole signed-in app: header / page / dock stacked, never scrolls as a whole */
 .shell {
   --header-h: 64px;
-  --dock-h: 88px;
-  --chrome-h: calc(var(--header-h) + var(--dock-h));
+  --bottom-h: 166px; /* the rounded nav + chat card, including its margin */
+  --chrome-h: calc(var(--header-h) + var(--bottom-h));
   position: relative;
   display: flex;
   flex-direction: column;
@@ -115,44 +115,52 @@
   overflow-y: auto;
 }
 
-/* ---------- bottom dock ---------- */
-.dock {
+/* ---------- bottom card: places on the left, room chat on the right ---------- */
+.bottom-panel {
   position: relative;
   z-index: 5;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  height: var(--dock-h);
-  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: auto 1px minmax(0, 1fr);
+  column-gap: 22px;
+  width: min(1400px, calc(100% - 32px));
+  margin: 0 auto 16px;
+  padding: 14px 22px 16px;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(18, 64, 63, 0.08);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(18, 64, 63, 0.16);
+  border-radius: 28px;
+  box-shadow: 0 8px 28px rgba(10, 60, 80, 0.12);
 }
+.bottom-nav { display: flex; flex-direction: column; gap: 8px; }
+.bottom-label {
+  min-height: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: var(--text);
+}
+.bottom-divider { align-self: stretch; margin-top: 4px; background: rgba(18, 64, 63, 0.14); }
+
+.dock { display: flex; gap: 8px; }
 .dock-link {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  width: 84px;
-  font-size: 11px;
+  gap: 8px;
+  width: 80px;
+  height: 88px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--ink);
   text-decoration: none;
   background: var(--mint);
-  border-radius: 18px;
+  border-radius: 20px;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
 }
-.dock-link:hover {
-  background: #d9f2ec;
-  transform: translateY(-4px);
-}
-.dock-link.active {
-  background: var(--ink);
-  color: #fff;
-}
+.dock-link:hover { background: #d9f2ec; transform: translateY(-4px); }
+.dock-link.active { background: var(--ink); color: #fff; }
 
 /* ---------- friends drawer ---------- */
 .friends-backdrop {
@@ -292,14 +300,26 @@
   color: var(--text);
 }
 
-/* ---------- small screens: icons only in the dock ---------- */
-@media (max-width: 640px) {
-  .shell { --dock-h: 68px; }
+/* ---------- small screens: chat on top, places underneath ---------- */
+@media (max-width: 900px) {
+  .shell { --bottom-h: 176px; }
   .shell-crumb,
   .pill-find-focus span,
   .pill-friends span:not(.pill-badge),
   .shell-user { display: none; }
   .shell-header { padding: 0 12px; }
-  .dock { gap: 4px; padding: 8px; }
-  .dock-link { flex: 1; width: auto; font-size: 10px; border-radius: 14px; }
+
+  .bottom-panel {
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+    width: calc(100% - 16px);
+    margin-bottom: 8px;
+    padding: 10px 10px 12px;
+    border-radius: 22px;
+  }
+  .bottom-divider,
+  .bottom-label { display: none; }
+  .chat-bar { order: -1; } /* chat above the places */
+  .dock { gap: 6px; }
+  .dock-link { flex: 1; width: auto; height: 54px; gap: 3px; font-size: 10px; border-radius: 14px; }
 }

@@ -5,11 +5,12 @@ import { clearToken } from '../api.js'
 import { SessionProvider } from '../SessionProvider.jsx'
 import { useSession } from '../sessionContext.js'
 import { ShellContext } from '../shellContext.js'
-// import { useFriends } from '../friends.js'
+import { useFriends } from '../friends.js'
 import AmbientBubbles from './AmbientBubbles.jsx'
 import BubbleLoader from './BubbleLoader.jsx'
+import ChatBar from './ChatBar.jsx'
 import Dock from './Dock.jsx'
-// import FriendsPanel from './FriendsPanel.jsx'
+import FriendsPanel from './FriendsPanel.jsx'
 import './AppShell.css'
 
 // breadcrumb text for each route (longest matching prefix wins)
@@ -29,8 +30,8 @@ const ROOM_NAMES = [
 function ShellFrame() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { self, error } = useSession()
-  const friends = [] // const friends = useFriends()
+  const { self, error, fishCount } = useSession()
+  const friends = useFriends()
   const [friendsOpen, setFriendsOpen] = useState(false)
 
   const roomName = ROOM_NAMES.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? ''
@@ -95,11 +96,19 @@ function ShellFrame() {
           </Suspense>
         </main>
 
-        <Dock />
+        {/* one rounded card: places on the left, room chat on the right */}
+        <footer className="bottom-panel">
+          <div className="bottom-nav">
+            <span className="bottom-label">ROOM CHAT · {fishCount} FISH</span>
+            <Dock />
+          </div>
+          <div className="bottom-divider" aria-hidden="true" />
+          <ChatBar />
+        </footer>
 
-        {/*<div id="friends-panel">
+        <div id="friends-panel">
           <FriendsPanel open={friendsOpen} onClose={() => setFriendsOpen(false)} />
-        </div>*/}
+        </div>
       </div>
     </ShellContext.Provider>
   )

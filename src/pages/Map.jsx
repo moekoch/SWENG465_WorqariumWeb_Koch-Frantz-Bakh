@@ -44,7 +44,7 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
 function WorldMap() {
   const navigate = useNavigate()
-  const { self, players, error, move } = useSession()
+  const { self, players, error, move, chatBubbles } = useSession()
 
   // bubble bursts shown where the user clicked
   const [bursts, setBursts] = useState([])
@@ -149,7 +149,12 @@ function WorldMap() {
 
         {/* one fish per player */}
         {everyone.map((player) => (
-          <SwimmingFish key={player.id} player={player} isSelf={player.id === self?.id} />
+          <SwimmingFish
+            key={player.id}
+            player={player}
+            isSelf={player.id === self?.id}
+            chatText={chatBubbles[player.id]?.text}
+          />
         ))}
 
         {/* status */}

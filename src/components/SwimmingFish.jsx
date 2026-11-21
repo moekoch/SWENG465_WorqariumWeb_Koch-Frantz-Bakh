@@ -6,7 +6,7 @@ import './SwimmingFish.css'
 
 // One fish. Glides to wherever `player.x / player.y` points, turns to face the
 // way it swims, leaves a bubble trail while moving, and sits lower = closer.
-function SwimmingFish({ player, isSelf = false, tint }) {
+function SwimmingFish({ player, isSelf = false, tint, chatText }) {
   // what we last rendered, so we can work out direction and swim time
   const [track, setTrack] = useState({
     x: player.x,
@@ -37,7 +37,8 @@ function SwimmingFish({ player, isSelf = false, tint }) {
       style={{
         left: `${player.x * 100}%`,
         top: `${player.y * 100}%`,
-        zIndex: Math.round(player.y * 100),
+        // a fish that is talking draws above the others so its bubble can be read
+        zIndex: chatText ? 150 : Math.round(player.y * 100),
         '--swim-seconds': `${track.seconds}s`,
         '--depth-scale': depthScale,
       }}
@@ -56,6 +57,13 @@ function SwimmingFish({ player, isSelf = false, tint }) {
           <span className="swimmer-trail swimmer-trail-c" aria-hidden="true" />
         </div>
         <span className="swimmer-name">{player.username}</span>
+
+        {/* speech bubble (keyed by text so a new message pops in again) */}
+        {chatText && (
+          <div key={chatText} className="swimmer-chat" role="status">
+            {chatText}
+          </div>
+        )}
       </div>
     </div>
   )

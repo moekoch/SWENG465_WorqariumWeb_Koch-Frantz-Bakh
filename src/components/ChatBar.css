@@ -1,0 +1,85 @@
+/* right half of the bottom card: newest message on top, field + Send under it */
+.chat-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  text-align: left;
+}
+
+/* lines up with the "ROOM CHAT · N FISH" label on the left */
+.chat-latest {
+  min-height: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-latest.is-note { color: #b3261e; font-weight: 700; }
+
+.chat-form { display: flex; gap: 14px; }
+
+/* field with its label inside, the same height as the nav buttons */
+.chat-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 88px;
+  padding: 0 22px;
+  box-sizing: border-box;
+  background: var(--mint);
+  border: 1px solid rgba(18, 64, 63, 0.6);
+  border-radius: 22px;
+  transition: box-shadow 0.15s ease;
+}
+.chat-field:focus-within {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(18, 64, 63, 0.18);
+}
+.chat-field span { font-size: 13px; font-weight: 800; color: var(--text); }
+/* the field around it is the box, so the typing area has none of its own */
+.chat-field input {
+  width: 100%;
+  padding: 0;
+  font-size: 20px;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+.chat-field input:focus-visible { outline: none; }
+.chat-field input::placeholder { color: var(--text); opacity: 0.8; }
+
+.chat-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 150px;
+  height: 88px;
+  padding: 0;
+  font-size: 20px;
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  border-radius: 22px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+}
+.chat-send:hover:not(:disabled) { background: #0c2e2d; transform: translateY(-2px) scale(1.03); }
+.chat-send:disabled { cursor: not-allowed; opacity: 0.55; }
+.chat-send:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+@media (max-width: 900px) {
+  .chat-latest { font-size: 14px; }
+  .chat-form { gap: 8px; }
+  .chat-field { height: 54px; padding: 0 16px; border-radius: 16px; gap: 0; }
+  .chat-field span { font-size: 11px; }
+  .chat-field input { font-size: 16px; }
+  .chat-send { width: 54px; height: 54px; border-radius: 16px; font-size: 0; gap: 0; } /* icon only */
+}

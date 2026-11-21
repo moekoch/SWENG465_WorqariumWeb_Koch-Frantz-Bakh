@@ -177,7 +177,7 @@ function Shop() {
         <section className="shop-greeting">
           <div className="shop-greeting-text" aria-live="polite">
             <span className="shop-eyebrow">RUSS · YOUR SHOPKEEPER</span>
-            <h1>&ldquo;Let&rsquo;s find a little something for you.&rdquo;</h1>
+            <h1>&ldquo;Keep it simple, stupid.&rdquo;</h1>
             <p>Make a little splash. Every unlock is yours to keep.</p>
             <strong>{shopkeeperNote || 'What catches your eye today?'}</strong>
           </div>
